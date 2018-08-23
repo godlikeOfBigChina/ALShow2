@@ -18,10 +18,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +59,16 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        LineChart chart = this.findViewById(R.id.chart);
+        BarChart chart = this.findViewById(R.id.chart);
         List entry=new ArrayList<Integer>();
         entry.add(new Entry(1,2));
         entry.add(new Entry(2,4));
         entry.add(new Entry(3,2));
-        LineDataSet dataSet = new LineDataSet(entry, "Label"); // add entries to dataset
+        BarDataSet dataSet = new BarDataSet(entry, "Label"); // add entries to dataset
         dataSet.setColor(Color.GREEN);
         dataSet.setValueTextColor(Color.GREEN);
-        LineData lineData = new LineData(dataSet);
-        chart.setData(lineData);
+        BarData barData = new BarData(dataSet);
+        chart.setData(barData);
         chart.invalidate();
     }
 

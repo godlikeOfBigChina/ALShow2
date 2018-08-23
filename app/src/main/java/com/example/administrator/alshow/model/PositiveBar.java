@@ -7,6 +7,15 @@ public class PositiveBar {
     private float voltage;
     private float current;
     private float tempareture;
+    private Motor motor;
+
+    public Motor getMotor() {
+        return motor;
+    }
+
+    public void setMotor(Motor motor) {
+        this.motor = motor;
+    }
 
     public int getGrooveId() {
         return grooveId;
@@ -55,4 +64,5 @@ public class PositiveBar {
     public void setTempareture(float tempareture) {
         this.tempareture = tempareture;
     }
+
 }
