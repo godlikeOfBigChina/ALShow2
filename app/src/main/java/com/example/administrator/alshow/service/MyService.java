@@ -6,6 +6,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.administrator.alshow.model.Groove;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -35,10 +37,65 @@ public class MyService extends Service {
         return super.stopService(name);
     }
 
+    @Override
+    public IBinder onBind(Intent intent) {
+        MyBinder myBinder = new MyBinder();
+        return myBinder;
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        super.onRebind(intent);
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        return true;
+    }
+
+    public class MyBinder extends Binder {
+
+        public MyService getMyService() {
+            return MyService.this;
+        }
+    }
+
+
+
     //================================================后台服务======================================
+    public Connection conncet() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.111:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
+                    "admin",
+                    "admin");
+            return conn;
+        } catch (ClassNotFoundException | SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+    }
 
+    public Groove getGroove(int id){
+        Groove groove=new Groove();
+        groove.setId(id);
+        try {
+            PreparedStatement pst=conn.prepareStatement( "select * from PostiveBar where grooveId=?");
+            pst.setInt(1,groove.getId());
+            ResultSet rst=pst.executeQuery();
+            while(rst.next()){
 
-    //=================================================SQLlite操作==================================
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return groove;
+    }
+
+    /*
+     * 登录
+     * */
     public String login(final String userName,final String userPassWord) throws InterruptedException {
 
         if (!userName.equals("") && !userPassWord.equals("")) {
@@ -69,42 +126,5 @@ public class MyService extends Service {
             ifLogin="0";
         }
         return ifLogin;
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        MyBinder myBinder = new MyBinder();
-        return myBinder;
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        return true;
-    }
-
-    public class MyBinder extends Binder {
-
-        public MyService getMyService() {
-            return MyService.this;
-        }
-    }
-
-    public Connection conncet(){
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.111:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
-                    "admin",
-                    "admin");
-            return conn;
-        } catch (ClassNotFoundException | SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
     }
 }
