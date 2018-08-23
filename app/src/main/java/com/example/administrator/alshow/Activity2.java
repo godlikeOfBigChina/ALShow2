@@ -40,7 +40,7 @@ public class Activity2 extends AppCompatActivity {
                     return true;
                 case R.id.navigation_dashboard:
                     List entry1=new ArrayList<Integer>();
-                    entry1.add(new Entry(1,1));
+                    entry1.add(new Entry(1,9));
                     entry1.add(new Entry(2,3));
                     entry1.add(new Entry(3,6));
                     LineDataSet dataSet1 = new LineDataSet(entry1, "历史棒图"); // add entries to dataset
