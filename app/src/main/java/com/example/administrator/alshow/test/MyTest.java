@@ -41,6 +41,7 @@ public class MyTest{
         assertEquals(19,bar.getCurrent(),0);
         assertEquals(19,bar.getVoltage(),0);
         assertEquals(19,bar.getTempareture(),0);
+        assertEquals(2,bar.getMotor().getSpeed());
     }
 
     @Test
