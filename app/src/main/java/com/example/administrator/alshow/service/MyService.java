@@ -70,12 +70,10 @@ public class MyService extends Service {
     public Connection conncet() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.111:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
-                    "admin",
-                    "admin");
+            conn = DriverManager.getConnection("jdbc:mysql://192.168.191.2:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
+            "admin","admin");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }

@@ -24,10 +24,6 @@
         <service android:name=".service.MyService" />
 
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".Activity2"
             android:label="@string/title_activity_2"
             android:theme="@style/AppTheme.NoActionBar">

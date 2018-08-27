@@ -1,5 +1,6 @@
 package com.example.administrator.alshow;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,19 +16,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.administrator.alshow.model.Groove;
+import com.example.administrator.alshow.service.MyService;
+import com.example.administrator.alshow.service.MyServiceConnection;
+import com.example.administrator.alshow.view.GetChart;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Activity2 extends AppCompatActivity {
-    //use github version control
+    private MyService myService;
+    private MyServiceConnection connection = new MyServiceConnection();
+
     private BarChart chart;
 
     private ViewPager mViewPager;
@@ -63,8 +67,10 @@ public class Activity2 extends AppCompatActivity {
 
         mSectionsPagerAdapter=new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager = findViewById(R.id.viewPager);
-        Fragment fragment=mSectionsPagerAdapter.getItem(0);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        Intent intent1 = new Intent(getApplicationContext(), MyService.class);
+        bindService(intent1, connection, BIND_AUTO_CREATE);
+        myService=connection.myService;
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -112,37 +118,29 @@ public class Activity2 extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.content_main, container, false);
-            ScrollingView scrollingView=rootView.findViewById(R.id.scroll);
-            BarChart chart= ((View)scrollingView).findViewById(R.id.chart);
-            List entry=new ArrayList<Integer>();
-            BarDataSet dataSet;
-            if( getArguments().getInt(ARG_SECTION_NUMBER)==0){
-                entry.add(new BarEntry(1,2));
-                entry.add(new BarEntry(2,0));
-                entry.add(new BarEntry(3,2));
-                dataSet = new BarDataSet(entry, "电压"); // add entries to dataset
-                dataSet.setColor(Color.RED);
-                dataSet.setValueTextColor(Color.RED);
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER)==1){
-                entry.add(new BarEntry(1,2));
-                entry.add(new BarEntry(2,4));
-                entry.add(new BarEntry(3,2));
-                dataSet = new BarDataSet(entry, "电流"); // add entries to dataset
-                dataSet.setColor(Color.GREEN);
-                dataSet.setValueTextColor(Color.GREEN);
-            }else{
-                entry.add(new BarEntry(1,2));
-                entry.add(new BarEntry(2,4));
-                entry.add(new BarEntry(3,2));
-                dataSet = new BarDataSet(entry, "温度"); // add entries to dataset
-                dataSet.setColor(Color.BLUE);
-                dataSet.setValueTextColor(Color.BLUE);
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)){
+                case 0://main.xml
+                    View main = inflater.inflate(R.layout.main, container, false);
+                    ScrollingView scrollingMain=main.findViewById(R.id.scroll_main);
+                    BarChart chart= ((View)scrollingMain).findViewById(R.id.A_chart_I);
+                    Groove groove=new Groove();
+                    groove.setId(1);
+                    chart= GetChart.getBarChart(chart,groove,true, GetChart.Kind.I);
+                    chart.invalidate();
+
+                    return main;
+                case 1:
+                    View history = inflater.inflate(R.layout.history, container, false);
+                    ScrollingView scrollingHistory=history.findViewById(R.id.scroll_history);
+                    return history;
+                case 2:
+                    View alert = inflater.inflate(R.layout.alert, container, false);
+                    ScrollingView scrollingAlert=alert.findViewById(R.id.scroll_alert);
+                    return alert;
+                default:
+                    return null;
             }
-            BarData barData = new BarData(dataSet);
-            chart.setData(barData);
-            chart.invalidate();
-            return rootView;
         }
     }
+
 }
