@@ -18,7 +18,6 @@ public class GetChart {
 
     public static BarChart getBarChart(BarChart barChart, Groove groove,boolean ifA,Kind kind){
         List entry=new ArrayList<Integer>();
-        groove=new MyService().getGroove(groove.getId());
         BarDataSet dataSet;
         if(ifA){
             for (PositiveBar bar:groove.getBarsOfA()) {
@@ -30,8 +29,8 @@ public class GetChart {
             }
         }
         dataSet = new BarDataSet(entry, kind==Kind.I?"电流":(kind==Kind.V?"电压":"温度")); // add entries to dataset
-        dataSet.setColor(Color.RED);
-        dataSet.setValueTextColor(Color.RED);
+        dataSet.setColor(kind==Kind.I?Color.GREEN:(kind==Kind.V?Color.RED:Color.BLUE));
+        dataSet.setValueTextColor(Color.BLACK);
         BarData barData = new BarData(dataSet);
         barChart.setData(barData);
         return barChart;

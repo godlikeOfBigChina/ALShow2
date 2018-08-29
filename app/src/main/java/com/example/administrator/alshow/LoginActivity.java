@@ -1,13 +1,17 @@
 package com.example.administrator.alshow;
 
+import android.app.IntentService;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -15,13 +19,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.administrator.alshow.model.User;
+import com.example.administrator.alshow.service.MyIntentService;
 import com.example.administrator.alshow.service.MyService;
 import com.example.administrator.alshow.service.MyServiceConnection;
+import com.example.administrator.alshow.service.StatusTable;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class LoginActivity extends Activity implements OnClickListener {
+import static com.example.administrator.alshow.service.StatusTable.ACTION_GETGROOVE;
+import static com.example.administrator.alshow.service.StatusTable.ACTION_LOGIN;
+
+public class LoginActivity extends Activity implements OnClickListener,MyIntentService.UpdateUI{
     // 声明控件对象
 
     private EditText et_name, et_pass;
@@ -36,14 +46,16 @@ public class LoginActivity extends Activity implements OnClickListener {
     private MyService myService;
     private MyServiceConnection connection = new MyServiceConnection();
 
+    private Handler handler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        Intent intent1 = new Intent(getApplicationContext(), MyService.class);
-        bindService(intent1, connection, BIND_AUTO_CREATE);
+//        Intent intent1 = new Intent(getApplicationContext(), MyService.class);
+//        bindService(intent1, connection, BIND_AUTO_CREATE);
         et_name = (EditText) findViewById(R.id.username);
         et_pass = (EditText) findViewById(R.id.password);
 
@@ -60,6 +72,30 @@ public class LoginActivity extends Activity implements OnClickListener {
         mLoginButton.setOnClickListener(this);
 
         findViewById(R.id.login_all).setOnClickListener(this);
+
+
+        handler=new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                switch (msg.what){
+                    case ACTION_LOGIN:
+                        Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        User user=(User)msg.obj;
+//                        Log.e(user.getId()+user.getPassWords(),Integer.toString(user.getRank()));
+                        intent.putExtra("userId",user.getId());
+                        intent.putExtra("userName",user.getName());
+                        intent.putExtra("userRank",user.getRank());
+                        startActivity(intent);
+                        break;
+                    case ACTION_GETGROOVE:
+                        break;
+                    default:
+                        Toast.makeText(LoginActivity.this, "登陆==", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -119,7 +155,7 @@ public class LoginActivity extends Activity implements OnClickListener {
             case R.id.login_button:
                 try {
                     login();
-                } catch (NoSuchAlgorithmException|InterruptedException e) {
+                } catch (NoSuchAlgorithmException e) {
 //                            e.printStackTrace();
                     Toast.makeText(LoginActivity.this,"加密出错",Toast.LENGTH_SHORT).show();
                 }
@@ -150,7 +186,7 @@ public class LoginActivity extends Activity implements OnClickListener {
     /**
      * 登陆
      */
-    private void login() throws NoSuchAlgorithmException, InterruptedException {
+    private void login2() throws NoSuchAlgorithmException, InterruptedException {
         myService = connection.myService;
         String name, code;
         name = et_name.getText().toString();
@@ -162,7 +198,7 @@ public class LoginActivity extends Activity implements OnClickListener {
             this.userID = myService.login(name, decodeResult);
             if (!this.userID.equals("0")) {
                 Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, Activity2.class);
+                Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
                 intent.putExtra("userName", userName);
                 intent.putExtra("userID", userID);
                 startActivity(intent);
@@ -174,10 +210,27 @@ public class LoginActivity extends Activity implements OnClickListener {
         }
         if (name.equals("admin") && code.equals("admin")) {
             Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, Activity2.class);
+            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.putExtra("userName", userName);
             intent.putExtra("userID", userID);
             startActivity(intent);
+        }
+    }
+
+
+    private void login() throws NoSuchAlgorithmException{
+        String username = et_name.getText().toString();
+        String code = et_pass.getText().toString();
+        String passwords = getMD5(code);
+        if (!username.equals("") && !code.equals("")) {
+            Intent intent=new Intent(this,MyIntentService.class);
+            intent.setAction(MyIntentService.ACTION_LOGIN);
+            intent.putExtra(MyIntentService.EXTRA_PARAM_USERNAME,username);
+            intent.putExtra(MyIntentService.EXTRA_PARAM_PASSWORDS,passwords);
+            startService(intent);
+            MyIntentService.setUpdateUI(this);
+        } else {
+            Toast.makeText(LoginActivity.this, "用户名或密码为空！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -209,6 +262,12 @@ public class LoginActivity extends Activity implements OnClickListener {
         }
 //        System.out.println(s.toString());
         return s.toString();
+    }
+
+
+    @Override
+    public void updateUi(Message message) {
+        handler.sendMessage(message);
     }
 }
 

@@ -4,12 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activity2"
-    tools:showIn="@layout/activity_2">
-
+    tools:context=".HistoryActivity">
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/scroll_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout

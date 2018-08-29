@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fitsSystemWindows="true"
@@ -38,11 +39,11 @@
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:layout_marginTop="5dp"
-                android:paddingRight="60dp"
                 android:maxLength="20"
+                android:paddingLeft="55dp"
+                android:paddingRight="60dp"
                 android:singleLine="true"
-                android:paddingLeft="55dp" >
-            </EditText>
+                android:text="ycn"></EditText>
 
             <ImageView
                 android:layout_width="24dp"
@@ -80,11 +81,11 @@
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:inputType="textPassword"
-                android:paddingRight="60dp"
                 android:maxLength="20"
+                android:paddingLeft="55dp"
+                android:paddingRight="60dp"
                 android:singleLine="true"
-                android:paddingLeft="55dp" >
-            </EditText>
+                android:text="y"></EditText>
 
             <ImageView
                 android:layout_width="24dp"

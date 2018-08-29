@@ -7,11 +7,12 @@
     </string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">userId</string>
+    <string name="nav_header_subtitle">userName</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="title_activity_2">Activity2</string>
     <string name="title_home">主页</string>
     <string name="title_dashboard">历史</string>
     <string name="title_notifications">通讯</string>
+    <string name="title_activity_home">HomeActivity</string>
 </resources>
