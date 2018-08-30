@@ -17,16 +17,6 @@ public class MyTest{
 
     private MyService service=new MyService();
 
-    @Test
-    public void testService() throws SQLException {
-        Connection conn=service.conncet();
-        assertEquals(false,conn.isClosed());
-        try {
-            assertEquals("1",service.login("ycn","6582-112118-107-108701446728934-112795293"));
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Test
     public void testGetGroove(){

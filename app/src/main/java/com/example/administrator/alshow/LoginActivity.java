@@ -1,6 +1,5 @@
 package com.example.administrator.alshow;
 
-import android.app.IntentService;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +10,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -22,8 +20,6 @@ import android.widget.Toast;
 import com.example.administrator.alshow.model.User;
 import com.example.administrator.alshow.service.MyIntentService;
 import com.example.administrator.alshow.service.MyService;
-import com.example.administrator.alshow.service.MyServiceConnection;
-import com.example.administrator.alshow.service.StatusTable;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -43,8 +39,6 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
     private TextWatcher password_watcher;
 
     private String userName, userID;
-    private MyService myService;
-    private MyServiceConnection connection = new MyServiceConnection();
 
     private Handler handler;
 
@@ -96,14 +90,6 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
                 return false;
             }
         });
-    }
-
-    @Override
-    public void finish() {
-        Intent intent = new Intent(this, MyService.class);
-        unbindService(connection);
-        stopService(intent);
-        super.finish();
     }
 
     //edittext监听
@@ -186,38 +172,6 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
     /**
      * 登陆
      */
-    private void login2() throws NoSuchAlgorithmException, InterruptedException {
-        myService = connection.myService;
-        String name, code;
-        name = et_name.getText().toString();
-        code = et_pass.getText().toString();
-        //password is needed to decode
-        String decodeResult = getMD5(code);
-        if (!name.equals("") && !code.equals("")) {
-            this.userName = name;
-            this.userID = myService.login(name, decodeResult);
-            if (!this.userID.equals("0")) {
-                Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this,HomeActivity.class);
-                intent.putExtra("userName", userName);
-                intent.putExtra("userID", userID);
-                startActivity(intent);
-            } else {
-                Toast.makeText(LoginActivity.this, "用户名或密码错误！", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(LoginActivity.this, "用户名或密码为空！", Toast.LENGTH_SHORT).show();
-        }
-        if (name.equals("admin") && code.equals("admin")) {
-            Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            intent.putExtra("userName", userName);
-            intent.putExtra("userID", userID);
-            startActivity(intent);
-        }
-    }
-
-
     private void login() throws NoSuchAlgorithmException{
         String username = et_name.getText().toString();
         String code = et_pass.getText().toString();

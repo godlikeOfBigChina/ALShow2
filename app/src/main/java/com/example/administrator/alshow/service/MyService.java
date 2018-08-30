@@ -22,49 +22,8 @@ import java.util.List;
 /**
  * Created by godlike on 2016/10/25.
  */
-public class MyService extends Service {
-    private String ifLogin="0";
+public class MyService{
     private Connection conn;
-
-    @Override
-    public void onCreate() {
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public boolean stopService(Intent name) {
-        return super.stopService(name);
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        MyBinder myBinder = new MyBinder();
-        return myBinder;
-    }
-
-    @Override
-    public void onRebind(Intent intent) {
-        super.onRebind(intent);
-    }
-
-    @Override
-    public boolean onUnbind(Intent intent) {
-        return true;
-    }
-
-    public class MyBinder extends Binder {
-
-        public MyService getMyService() {
-            return MyService.this;
-        }
-    }
-
-
 
     //================================================后台服务======================================
     public Connection conncet() {
@@ -117,7 +76,7 @@ public class MyService extends Service {
         PositiveBar bar =new PositiveBar();
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from PositiveBarNow where grooveId=? and id=? and ifA=?");
+            PreparedStatement pst=conn.prepareStatement( "select * from historyBar where grooveId=? and id=? and ifA=?");
             pst.setInt(1,grooveId);
             pst.setInt(2,id);
             pst.setBoolean(3,ifA);
@@ -130,6 +89,7 @@ public class MyService extends Service {
                 bar.setVoltage(rst.getFloat(5));
                 bar.setTempareture(rst.getFloat(6));
                 bar.setMotor(getMotor(rst.getInt(7)));
+
             }
             conn.close();
             return bar;
@@ -165,41 +125,4 @@ public class MyService extends Service {
         }
     }
 
-
-
-    /*
-     * 登录
-     * */
-    public String login(final String userName,final String userPassWord) throws InterruptedException {
-
-        if (!userName.equals("") && !userPassWord.equals("")) {
-            //userName and usePassWord exist only,can login
-            Thread thread=new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    conn = conncet();
-                    try {
-                        PreparedStatement pst = conn.prepareStatement("select count(*) from system_user where(ID=? and pass_words=?)");
-                        pst.setString(1, userName);
-                        pst.setString(2, userPassWord);
-                        ResultSet rst = pst.executeQuery();
-                        while (rst.next()) {
-                            if (rst.getInt(1) == 1) ifLogin = "1";
-//                            System.out.println(ifLogin);
-                        }
-                        conn.close();
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                        ifLogin = "0";
-                    }
-                }
-            });
-            thread.start();
-            thread.join();
-            return ifLogin;
-        }else{
-            ifLogin="0";
-        }
-        return ifLogin;
-    }
 }

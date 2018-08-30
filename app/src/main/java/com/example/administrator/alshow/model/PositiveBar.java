@@ -1,5 +1,7 @@
 package com.example.administrator.alshow.model;
 
+import java.util.Date;
+
 public class PositiveBar {
     private int grooveId;
     private int id;
@@ -7,6 +9,7 @@ public class PositiveBar {
     private float voltage;
     private float current;
     private float tempareture;
+    private Date datetime;
     private Motor motor;
 
     public Motor getMotor() {
@@ -65,4 +68,11 @@ public class PositiveBar {
         this.tempareture = tempareture;
     }
 
+    public Date getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
+    }
 }

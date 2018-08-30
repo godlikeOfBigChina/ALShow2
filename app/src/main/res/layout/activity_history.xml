@@ -6,12 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".HistoryActivity">
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="4">
+                <EditText
+                    android:id="@+id/grooveId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="槽号"
+                    android:layout_weight="1"/>
+                <EditText
+                    android:id="@+id/anodeId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="序号"
+                    android:layout_weight="1"/>
+                <RadioButton
+                    android:id="@+id/ifA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="A面"/>
+                <Button
+                    android:id="@+id/btnGetHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="查询"/>
+            </LinearLayout>
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartLineI"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+            </com.github.mikephil.charting.charts.LineChart>
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartLineV"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+            </com.github.mikephil.charting.charts.LineChart>
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chartLineT"
+                android:layout_width="match_parent"
+                android:layout_height="300dp">
+            </com.github.mikephil.charting.charts.LineChart>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
