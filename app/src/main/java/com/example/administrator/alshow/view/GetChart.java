@@ -55,7 +55,6 @@ public class GetChart {
         LineDataSet dataSet = new LineDataSet(entry, kind==Kind.I?"电流":(kind==Kind.V?"电压:mV":"温度")); // add entries to dataset
         dataSet.setColor(kind==Kind.I?Color.GREEN:(kind==Kind.V?Color.RED:Color.BLUE));
         dataSet.setValueTextColor(Color.BLACK);
-        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         LineData data = new LineData(dataSet);
         final String[] xAixsLabels=xLables;
         chart.getXAxis().setValueFormatter(new IAxisValueFormatter() {
@@ -64,21 +63,6 @@ public class GetChart {
                 return xAixsLabels[(int)value];
             }
         });
-        chart.setData(data);
-        return chart;
-    }
-
-    public static BarChart getAnodeHistory(BarChart chart,List<PositiveBar> anodeList, Kind kind){
-//        Log.e("size:"+anodeList.size(),anodeList.get(0).toString());
-        List entry=new ArrayList<Float>();
-        float i=0.0000f;
-        for (PositiveBar bar:anodeList) {
-            entry.add(new BarEntry(i++,kind==Kind.I?bar.getCurrent():(kind==Kind.V?bar.getVoltage():bar.getTempareture())));
-        }
-        BarDataSet dataSet = new BarDataSet(entry, kind==Kind.I?"电流":(kind==Kind.V?"电压":"温度")); // add entries to dataset
-        dataSet.setColor(kind==Kind.I?Color.GREEN:(kind==Kind.V?Color.RED:Color.BLUE));
-        dataSet.setValueTextColor(Color.BLACK);
-        BarData data = new BarData(dataSet);
         chart.setData(data);
         return chart;
     }

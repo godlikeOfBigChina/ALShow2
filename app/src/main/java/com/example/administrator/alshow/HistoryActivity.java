@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.ToggleButton;
 
 import com.example.administrator.alshow.model.Groove;
 import com.example.administrator.alshow.model.PositiveBar;
@@ -24,30 +25,25 @@ import com.github.mikephil.charting.charts.LineChart;
 import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity implements MyIntentService.UpdateUI {
+    private EditText grooveIdView;
+    private EditText anodeIdView;
+    private ToggleButton ifAView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        EditText grooveIdView=findViewById(R.id.grooveId);
-        EditText anodeIdView=findViewById(R.id.anodeId);
-        RadioButton ifAView=findViewById(R.id.ifA);
-        ifAView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(ifAView.isSelected()){
-                    ifAView.setSelected(false);
-                }
-            }
-        });
+        grooveIdView=findViewById(R.id.grooveId);
+        anodeIdView=findViewById(R.id.anodeId);
+        ifAView=findViewById(R.id.ifA);
         Button getHistory=findViewById(R.id.btnGetHistory);
         getHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int grooveId=Integer.parseInt(grooveIdView.getText().toString());
                 int anodeId=Integer.parseInt(anodeIdView.getText().toString());
-                boolean ifA=ifAView.isSelected();
+                boolean ifA=ifAView.isChecked();
                 Intent intent=new Intent(HistoryActivity.this, MyIntentService.class);
                 intent.setAction(MyIntentService.ACTION_GETHISTORY);
                 intent.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,grooveId);

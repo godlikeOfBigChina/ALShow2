@@ -30,10 +30,12 @@
                     android:layout_height="match_parent"
                     android:hint="序号"
                     android:layout_weight="1"/>
-                <RadioButton
+                <ToggleButton
                     android:id="@+id/ifA"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:textOn="A侧"
+                    android:textOff="B侧"
                     android:layout_weight="1"
                     android:text="A面"/>
                 <Button
