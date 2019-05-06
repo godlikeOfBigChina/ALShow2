@@ -126,11 +126,12 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_comm) {
 
         } else if (id == R.id.nav_control) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
             builder.setTitle("无法使用");
             builder.setMessage("功能未完成或权限不足");
             AlertDialog dialog = builder.create();
-            dialog.show();
+            dialog.show();*/
+            startActivity(new Intent(this,ControlActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

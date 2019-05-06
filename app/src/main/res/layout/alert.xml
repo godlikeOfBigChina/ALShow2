@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Activity2"
-    tools:showIn="@layout/activity_2">
+    tools:context=".ControlActivity"
+    tools:showIn="@layout/activity_control">
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scroll_alert"

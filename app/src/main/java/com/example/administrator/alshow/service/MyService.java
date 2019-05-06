@@ -29,8 +29,8 @@ public class MyService{
     public Connection conncet() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://192.168.191.2:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
-            "admin","admin");
+            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
+            "root","ABCabc123");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
