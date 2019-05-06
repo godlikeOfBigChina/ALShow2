@@ -118,13 +118,13 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.nav_history) {
             startActivity(new Intent(this,HistoryActivity.class));
         } else if (id == R.id.nav_alert) {
-
+            startActivity(new Intent(this,AlertActivity.class));
         } else if (id == R.id.nav_diary) {
 
         } else if (id == R.id.nav_extend) {
-
+            startActivity(new Intent(this,AlertActivity.class));
         } else if (id == R.id.nav_comm) {
-
+            startActivity(new Intent(this,ComActivity.class));
         } else if (id == R.id.nav_control) {
             /*AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
             builder.setTitle("无法使用");
