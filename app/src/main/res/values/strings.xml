@@ -21,4 +21,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_alert">AlertActivity</string>
     <string name="title_activity_com">ComActivity</string>
+
+    <string name="title_activity_situation">SituationActivity</string>
 </resources>

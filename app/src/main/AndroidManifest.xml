@@ -22,7 +22,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".service.MyService" />
         <service
             android:name=".service.MyIntentService"
             android:exported="false" />
@@ -42,7 +41,12 @@
         <activity
             android:name=".ComActivity"
             android:label="@string/title_activity_com"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SituationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_situation"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

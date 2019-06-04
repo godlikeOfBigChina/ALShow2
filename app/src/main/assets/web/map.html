@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>实时库存仪表盘</title>
+    <script type="text/javascript" src="svg.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="svg-pan-zoom.js"></script>
+    <script>
+        function a(msg){
+            control.toastMessage(msg);
+        }
+        window.onload = function(){
+            var draw = SVG('svg');
+            a(window.screen.width);
+            a(window.screen.height);
+			draw.attr('width',400);
+			draw.attr('height',720);
+            window.zoomTiger = svgPanZoom('#svg', {
+              zoomEnabled: true,
+              controlIconsEnabled: true,
+              fit: true,
+              center: true,
+            });
+        };
+    </script>
+</head>
+
+<body style="background: -webkit-linear-gradient(top, #21bdff 0%, #00cc66 100%)">
+<svg id="svg" viewBox="0 0 600 50" xmlns="http://www.w3.org/2000/svg">
+    <text id="t" x="0" y="10">8</text>
+    <line y2="105.45001" x2="480" y1="105.45001" x1="80" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="133.45001" x2="517" y1="133.45001" x1="117" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="132.45001" x2="117.5" y1="104.45001" x1="80.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="168.45001" x2="83.5" y1="108.45001" x1="83.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="193.45001" x2="116.5" y1="133.45001" x1="116.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="267.45001" x2="146.5" y1="192.45001" x1="116.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="304.45001" x2="146.5" y1="267.45001" x1="146.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="188.45001" x2="42.5" y1="164.45001" x1="83.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="215.45001" x2="42.5" y1="306.45001" x1="146.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="189.45001" x2="43" y1="215.45001" x1="42.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="132.45001" x2="513.5" y1="104.45001" x1="476.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="193.45001" x2="512.5" y1="133.45001" x1="512.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="267.45001" x2="542.5" y1="192.45001" x1="512.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="304.45001" x2="542.5" y1="267.45001" x1="542.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="306.45001" x2="546" y1="306.45001" x1="146" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+    <line y2="190.45001" x2="516" y1="190.45001" x1="116" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+</svg>
+</body>
+
+</html>

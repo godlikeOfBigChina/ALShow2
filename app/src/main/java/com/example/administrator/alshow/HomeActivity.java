@@ -121,8 +121,8 @@ public class HomeActivity extends AppCompatActivity
             startActivity(new Intent(this,AlertActivity.class));
         } else if (id == R.id.nav_diary) {
 
-        } else if (id == R.id.nav_extend) {
-            startActivity(new Intent(this,AlertActivity.class));
+        } else if (id == R.id.nav_situation) {
+            startActivity(new Intent(this,SituationActivity.class));
         } else if (id == R.id.nav_comm) {
             startActivity(new Intent(this,ComActivity.class));
         } else if (id == R.id.nav_control) {

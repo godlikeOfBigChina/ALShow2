@@ -17,9 +17,9 @@
             android:icon="@drawable/ic_menu_slideshow"
             android:title="操作记录" />
         <item
-            android:id="@+id/nav_extend"
+            android:id="@+id/nav_situation"
             android:icon="@drawable/ic_menu_manage"
-            android:title="后续扩展" />
+            android:title="槽况概览" />
     </group>
 
     <item android:title="Communicate">
