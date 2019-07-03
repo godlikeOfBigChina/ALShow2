@@ -28,6 +28,7 @@
 
         <activity android:name=".HomeActivity" />
         <activity android:name=".HistoryActivity" />
+        <activity android:name=".OpDiaryActivity"/>
         <activity
             android:name=".ControlActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -46,7 +47,8 @@
             android:name=".SituationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_situation"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="locked"/>
     </application>
 
 </manifest>

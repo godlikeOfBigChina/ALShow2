@@ -3,21 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+
+    <meta name="viewport" content="target-densitydpi=device-dpi,width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <title>实时库存仪表盘</title>
     <script type="text/javascript" src="svg.min.js"></script>
     <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="svg-pan-zoom.js"></script>
+
     <script>
         function a(msg){
             control.toastMessage(msg);
         }
         window.onload = function(){
             var draw = SVG('svg');
-            a(window.screen.width);
+            draw.attr('width',window.screen.width);
+            draw.attr('height',window.screen.height*9/10);
             a(window.screen.height);
-			draw.attr('width',400);
-			draw.attr('height',720);
             window.zoomTiger = svgPanZoom('#svg', {
               zoomEnabled: true,
               controlIconsEnabled: true,
@@ -29,24 +30,107 @@
 </head>
 
 <body style="background: -webkit-linear-gradient(top, #21bdff 0%, #00cc66 100%)">
-<svg id="svg" viewBox="0 0 600 50" xmlns="http://www.w3.org/2000/svg">
-    <text id="t" x="0" y="10">8</text>
-    <line y2="105.45001" x2="480" y1="105.45001" x1="80" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="133.45001" x2="517" y1="133.45001" x1="117" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="132.45001" x2="117.5" y1="104.45001" x1="80.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="168.45001" x2="83.5" y1="108.45001" x1="83.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="193.45001" x2="116.5" y1="133.45001" x1="116.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="267.45001" x2="146.5" y1="192.45001" x1="116.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="304.45001" x2="146.5" y1="267.45001" x1="146.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="188.45001" x2="42.5" y1="164.45001" x1="83.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="215.45001" x2="42.5" y1="306.45001" x1="146.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="189.45001" x2="43" y1="215.45001" x1="42.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="132.45001" x2="513.5" y1="104.45001" x1="476.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="193.45001" x2="512.5" y1="133.45001" x1="512.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="267.45001" x2="542.5" y1="192.45001" x1="512.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="304.45001" x2="542.5" y1="267.45001" x1="542.5" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="306.45001" x2="546" y1="306.45001" x1="146" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
-    <line y2="190.45001" x2="516" y1="190.45001" x1="116" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+<svg id="svg" viewBox="300 0 500 1200" xmlns="http://www.w3.org/2000/svg">
+	<rect height="1000" width="300" y="5" x="450" stroke-width="1.5" stroke="#000" fill="#888"/>
+	<rect id="A1" height="15" width="15" y="10" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A2" height="15" width="15" y="30" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A3" height="15" width="15" y="50" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A4" height="15" width="15" y="70" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A5" height="15" width="15" y="90" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A6" height="15" width="15" y="110" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A7" height="15" width="15" y="130" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A8" height="15" width="15" y="150" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A9" height="15" width="15" y="170" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A10" height="15" width="15" y="190" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A11" height="15" width="15" y="210" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A12" height="15" width="15" y="230" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A13" height="15" width="15" y="250" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A14" height="15" width="15" y="270" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A15" height="15" width="15" y="290" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A16" height="15" width="15" y="310" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A17" height="15" width="15" y="330" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A18" height="15" width="15" y="350" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A19" height="15" width="15" y="370" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A20" height="15" width="15" y="390" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A21" height="15" width="15" y="410" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A22" height="15" width="15" y="430" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A23" height="15" width="15" y="450" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A24" height="15" width="15" y="470" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A25" height="15" width="15" y="490" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A26" height="15" width="15" y="510" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A27" height="15" width="15" y="530" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A28" height="15" width="15" y="550" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A29" height="15" width="15" y="570" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A30" height="15" width="15" y="590" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A31" height="15" width="15" y="610" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A32" height="15" width="15" y="630" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A33" height="15" width="15" y="650" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A34" height="15" width="15" y="670" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A35" height="15" width="15" y="690" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A36" height="15" width="15" y="710" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A37" height="15" width="15" y="730" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A38" height="15" width="15" y="750" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A39" height="15" width="15" y="770" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A40" height="15" width="15" y="790" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A41" height="15" width="15" y="810" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A42" height="15" width="15" y="830" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A43" height="15" width="15" y="850" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A44" height="15" width="15" y="870" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A45" height="15" width="15" y="890" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A46" height="15" width="15" y="910" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A47" height="15" width="15" y="930" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="A48" height="15" width="15" y="950" x="440" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B1" height="15" width="15" y="10" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B2" height="15" width="15" y="30" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B3" height="15" width="15" y="50" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B4" height="15" width="15" y="70" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B5" height="15" width="15" y="90" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B6" height="15" width="15" y="110" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B7" height="15" width="15" y="130" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B8" height="15" width="15" y="150" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B9" height="15" width="15" y="170" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B10" height="15" width="15" y="190" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B11" height="15" width="15" y="210" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B12" height="15" width="15" y="230" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B13" height="15" width="15" y="250" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B14" height="15" width="15" y="270" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B15" height="15" width="15" y="290" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B16" height="15" width="15" y="310" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B17" height="15" width="15" y="330" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B18" height="15" width="15" y="350" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B19" height="15" width="15" y="370" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B20" height="15" width="15" y="390" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B21" height="15" width="15" y="410" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B22" height="15" width="15" y="430" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B23" height="15" width="15" y="450" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B24" height="15" width="15" y="470" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B25" height="15" width="15" y="490" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B26" height="15" width="15" y="510" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B27" height="15" width="15" y="530" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B28" height="15" width="15" y="550" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B29" height="15" width="15" y="570" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B30" height="15" width="15" y="590" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B31" height="15" width="15" y="610" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B32" height="15" width="15" y="630" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B33" height="15" width="15" y="650" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B34" height="15" width="15" y="670" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B35" height="15" width="15" y="690" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B36" height="15" width="15" y="710" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B37" height="15" width="15" y="730" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B38" height="15" width="15" y="750" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B39" height="15" width="15" y="770" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B40" height="15" width="15" y="790" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B41" height="15" width="15" y="810" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B42" height="15" width="15" y="830" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B43" height="15" width="15" y="850" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B44" height="15" width="15" y="870" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B45" height="15" width="15" y="890" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B46" height="15" width="15" y="910" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B47" height="15" width="15" y="930" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<rect id="B48" height="15" width="15" y="950" x="745" stroke-width="1.5" stroke="#000" fill="#fff"/>
+	<text id="number" x="540" y="500" font-size="50">1001</text>
+	<text id="number" x="710" y="500" font-size="50">B</text>
+	<text id="number" x="460" y="500" font-size="50">A</text>
 </svg>
 </body>
 

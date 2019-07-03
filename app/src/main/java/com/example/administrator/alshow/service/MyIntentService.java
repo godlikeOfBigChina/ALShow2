@@ -210,8 +210,8 @@ public class MyIntentService extends IntentService {
     public Connection conncet() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://172.16.99.98:3306/anode_online?useSSL=false&allowPublicKeyRetrieval=true",
-                    "rmadmin","rmadmin");
+            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
+                    "admin","ABCabc123");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -219,7 +219,7 @@ public class MyIntentService extends IntentService {
         }
     }
 
-    public interface UpdateUI{
+    public interface UpdateUI {
         void updateUi(Message message);
     }
 }

@@ -120,7 +120,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_alert) {
             startActivity(new Intent(this,AlertActivity.class));
         } else if (id == R.id.nav_diary) {
-
+            startActivity(new Intent(this,OpDiaryActivity.class));
         } else if (id == R.id.nav_situation) {
             startActivity(new Intent(this,SituationActivity.class));
         } else if (id == R.id.nav_comm) {
