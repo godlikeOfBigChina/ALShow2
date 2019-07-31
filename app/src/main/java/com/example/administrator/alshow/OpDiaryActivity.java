@@ -1,28 +1,52 @@
 package com.example.administrator.alshow;
 
+import android.content.Intent;
+import android.os.Message;
+import android.support.v4.view.ScrollingView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.administrator.alshow.model.OpDataAdaptor;
 import com.example.administrator.alshow.model.OpDiary;
+import com.example.administrator.alshow.model.PositiveBar;
+import com.example.administrator.alshow.service.MyIntentService;
+import com.example.administrator.alshow.service.StatusTable;
+import com.example.administrator.alshow.view.GetChart;
+import com.github.mikephil.charting.charts.LineChart;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class OpDiaryActivity extends AppCompatActivity {
+public class OpDiaryActivity extends AppCompatActivity implements MyIntentService.UpdateUI{
+
+    ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_op_diary);
-        OpDiary row=new OpDiary();
-        row.setUsername("张三");
-        row.setOpTime("2019-6-1 00:00:00");
-        row.setOpType(11);
-        row.setOpObject("探针伸出");
-        ArrayList<OpDiary> list=new ArrayList<>();
-        list.add(row);list.add(row);list.add(row);list.add(row);list.add(row);list.add(row);
-        ListView listView=(ListView)findViewById(R.id.op_list_view);
-        listView.setAdapter(new OpDataAdaptor(this,list));
+        listView=(ListView)findViewById(R.id.op_list_view);
+        Intent intentService=new Intent(getBaseContext(),MyIntentService.class);
+        intentService.setAction(MyIntentService.ACTION_GETLOGS);
+        intentService.putExtra(MyIntentService.EXTRA_PARAM_USERNAME,getIntent().getStringExtra("username"));
+        startService(intentService);
+        MyIntentService.setUpdateUI(OpDiaryActivity.this);
+    }
+
+    @Override
+    public void updateUi(Message message) {
+        if(message.what== StatusTable.ACTION_GETREADLOGS){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayList<OpDiary> list=(ArrayList<OpDiary>)message.obj;
+                    listView.setAdapter(new OpDataAdaptor(getBaseContext(),list));
+                    Toast.makeText(getBaseContext(),"正在更新...",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }

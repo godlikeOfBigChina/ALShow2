@@ -1,18 +1,21 @@
 package com.example.administrator.alshow.model;
 
-public class Motor implements MotorControler {
+import com.example.administrator.alshow.service.MotorDriver;
+
+public abstract class Motor{
     private int id;
-    private int speed;
-    private int steps;
-    private int currents;
-    private int acceleration;
-    private int position;
-    private int alertStatue;
-    private int rounds;
-    private int backSpeed;
+    private boolean isA;
+    private boolean reach;
+    private MotorDriver driver;
 
+    
+    public Motor(int id, boolean isA) {
+		this.id = id;
+		this.isA = isA;
+		this.driver=new MotorDriver();
+	}
 
-    public int getId() {
+	public int getId() {
         return id;
     }
 
@@ -20,77 +23,33 @@ public class Motor implements MotorControler {
         this.id = id;
     }
 
-    public int getSpeed() {
-        return speed;
+    public boolean isReach() {
+        return reach;
     }
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    public void setReach(boolean reach) {
+        this.reach = reach;
     }
 
-    public int getSteps() {
-        return steps;
-    }
+    public boolean isA() {
+		return isA;
+	}
 
-    public void setSteps(int steps) {
-        this.steps = steps;
-    }
+	public void setA(boolean isA) {
+		this.isA = isA;
+	}
+	
 
-    public int getCurrents() {
-        return currents;
-    }
+	public MotorDriver getDriver() {
+		return driver;
+	}
 
-    public void setCurrents(int currents) {
-        this.currents = currents;
-    }
+	public void setDriver(MotorDriver driver) {
+		this.driver = driver;
+	}
 
-    public int getAcceleration() {
-        return acceleration;
-    }
+	public abstract boolean forward() throws Exception;
+    
+    public abstract boolean backward() throws Exception;
 
-    public void setAcceleration(int acceleration) {
-        this.acceleration = acceleration;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public int getAlertStatue() {
-        return alertStatue;
-    }
-
-    public void setAlertStatue(int alertStatue) {
-        this.alertStatue = alertStatue;
-    }
-
-    public int getRounds() {
-        return rounds;
-    }
-
-    public void setRounds(int rounds) {
-        this.rounds = rounds;
-    }
-
-    public int getBackSpeed() {
-        return backSpeed;
-    }
-
-    public void setBackSpeed(int backSpeed) {
-        this.backSpeed = backSpeed;
-    }
-
-    @Override
-    public int convert() {
-        return 0;
-    }
-
-    @Override
-    public boolean revert() {
-        return false;
-    }
 }

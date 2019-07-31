@@ -34,12 +34,11 @@ public class OpDataAdaptor extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         OpDiaryViewHolder holder=new OpDiaryViewHolder(context,parent);
-        for(OpDiary t:diarys){
-            holder.setUsername(t.getUsername());
-            holder.setOpTime(t.getOpTime());
-            holder.setOpType(t.getOpType());
-            holder.setOpObject(t.getOpObject());
-        }
+        OpDiary t=diarys.get(position);
+        holder.setUsername(t.getUsername());
+        holder.setOpTime(t.getOpTime());
+        holder.setOpType(t.getOpType());
+        holder.setOpObject(t.getOpObject());
         return holder.getView();
     }
 }

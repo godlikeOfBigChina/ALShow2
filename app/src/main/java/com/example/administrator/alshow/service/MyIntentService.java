@@ -4,10 +4,9 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
 import android.os.Message;
-import android.util.Log;
 
 import com.example.administrator.alshow.model.Groove;
-import com.example.administrator.alshow.model.Motor;
+import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
 import com.example.administrator.alshow.model.User;
 
@@ -37,12 +36,15 @@ public class MyIntentService extends IntentService {
     public static final String ACTION_LOGIN = "com.example.administrator.alshow.service.action.LOGIN";
     public static final String ACTION_GETGROOVE = "com.example.administrator.alshow.service.action.GetGroove";
     public static final String ACTION_GETHISTORY = "com.example.administrator.alshow.service.action.GetHistory";
+    public static final String ACTION_GETLOGS = "com.example.administrator.alshow.service.action.GetLogs";
+    public static final String ACTION_WRITELOG = "com.example.administrator.alshow.service.action.WriteLog";
 
     public static final String EXTRA_PARAM_USERNAME = "com.example.administrator.alshow.service.extra.USERNAME";
     public static final String EXTRA_PARAM_PASSWORDS = "com.example.administrator.alshow.service.extra.PASSWORDS";
     public static final String EXTRA_PARAM_GROOVEID = "com.example.administrator.alshow.service.extra.GROOVEID";
     public static final String EXTRA_PARAM_IFA = "com.example.administrator.alshow.service.extra.IFA";
     public static final String EXTRA_PARAM_ANODEID = "com.example.administrator.alshow.service.extra.ANODEID";
+    public static final String EXTRA_PARAM_LOGROW = "com.example.administrator.alshow.service.extra.logrow";
 
     public MyIntentService() {
         super("MyIntentService");
@@ -97,6 +99,12 @@ public class MyIntentService extends IntentService {
                 boolean ifA=intent.getBooleanExtra(EXTRA_PARAM_IFA,false);
                 int anodeId=intent.getIntExtra(EXTRA_PARAM_ANODEID,-1);
                 handleActionGetHistory(grooveId,ifA,anodeId);
+            }else if(ACTION_GETLOGS.equals(action)){
+                String username=intent.getStringExtra(EXTRA_PARAM_USERNAME);
+                handleActionReadLog(username);
+            }else if(ACTION_WRITELOG.equals(action)){
+                OpDiary row=(OpDiary)intent.getSerializableExtra(EXTRA_PARAM_LOGROW);
+                handleActionWriteLog(row);
             }
         }
     }
@@ -140,22 +148,28 @@ public class MyIntentService extends IntentService {
         Message msg=new Message();
         msg.what=StatusTable.ACTION_GETGROOVE;
         Groove groove=new Groove();
-        groove.setId(param1);
+        groove.setPotNo(param1);
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from positiveBarNow where grooveId=?");
-            pst.setInt(1,groove.getId());
+            PreparedStatement pst=conn.prepareStatement( "SELECT g.POT_NO,g.POT_NAME,g.IP_ADDR,b.ROD_NO,b.ROD_NAME,b.SIDE_TYPE,d.CURRENT,d.VOLTAGE,d.TEMPERATURE,d.MEASURE_TIME  FROM pot_measure_data d,rod_info b,pot_info g,\n" +
+                    "(SELECT MAX(dd.MEASURE_TIME) AS maxt FROM pot_measure_data dd) AS t\n" +
+                    "WHERE g.POT_NO=? AND g.POT_NO=d.POT_NO AND g.POT_NO=b.POT_NO AND d.MEASURE_TIME=t.maxt\n" +
+                    "GROUP BY b.ROD_NO;");
+            pst.setInt(1,groove.getPotNo());
             ResultSet rst=pst.executeQuery();
             List<PositiveBar> listA=new ArrayList<>();
             List<PositiveBar> listB=new ArrayList<>();
             while(rst.next()){
+                groove.setPotNo(rst.getInt("POT_NO"));
+                groove.setPotName(rst.getString("POT_NAME"));
+                groove.setIpAddress(rst.getString("IP_ADDR"));
                 PositiveBar bar=new PositiveBar();
-                bar.setGrooveId(rst.getInt(1));
-                bar.setId(rst.getInt(2));
-                bar.setIfA(rst.getBoolean(3));
-                bar.setCurrent(rst.getFloat(4));
-                bar.setVoltage(rst.getFloat(5));
-                bar.setTempareture(rst.getFloat(6));
+                bar.setGrooveId(rst.getInt("POT_NO"));
+                bar.setId(rst.getInt("ROD_NO"));
+                bar.setIfA(rst.getString("SIDE_TYPE").equals("A"));
+                bar.setCurrent(rst.getFloat("CURRENT"));
+                bar.setVoltage(rst.getFloat("VOLTAGE"));
+                bar.setTempareture(rst.getFloat("TEMPERATURE"));
                 if(bar.isIfA()){
                     listA.add(bar);
                 }else{
@@ -177,24 +191,21 @@ public class MyIntentService extends IntentService {
         Message msg=new Message();
         msg.what=StatusTable.ACTION_GETBARHISTORY;
         List<PositiveBar> anodeHistory=new ArrayList<>();
-
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from historyBar " +
-                    "where grooveId=? and ifA=? and id=? and datetime like '2018-07-15 08:%'");
+            PreparedStatement pst=conn.prepareStatement( "select * from pot_measure_data where POT_NO=? and ROD_NO=?");
             pst.setInt(1,grooveId);
-            pst.setInt(2,ifA?1:0);
-            pst.setInt(3,anodeId);
+            pst.setInt(2,ifA?anodeId:anodeId+24);
             ResultSet rst=pst.executeQuery();
             while(rst.next()){
                 PositiveBar bar =new PositiveBar();
-                bar.setGrooveId(rst.getInt(1));
-                bar.setIfA(rst.getBoolean(2));
-                bar.setId(rst.getInt(3));
-                bar.setDatetime(new Date(rst.getTimestamp(4).getTime()));
-                bar.setCurrent(rst.getFloat(5));
-                bar.setVoltage(rst.getFloat(6));
-                bar.setTempareture(rst.getFloat(7));
+                bar.setGrooveId(grooveId);
+                bar.setIfA(ifA);
+                bar.setId(anodeId);
+                bar.setDatetime(new Date(rst.getTimestamp("MEASURE_TIME").getTime()));
+                bar.setCurrent(rst.getFloat("CURRENT"));
+                bar.setVoltage(rst.getFloat("VOLTAGE"));
+                bar.setTempareture(rst.getFloat("TEMPERATURE"));
                 anodeHistory.add(bar);
 //                Log.e("**********",bar.getDatetime().toLocaleString());
             }
@@ -207,10 +218,52 @@ public class MyIntentService extends IntentService {
         updateUI.updateUi(msg);
     }
 
+    private void handleActionReadLog(String username){
+        Message msg=new Message();
+        msg.what=StatusTable.ACTION_GETREADLOGS;
+        List<OpDiary> logs=new ArrayList<>();
+        try {
+            conn=conncet();
+            PreparedStatement pst=conn.prepareStatement( "select * from op_log where user=?");
+            pst.setString(1,username);
+            ResultSet rst=pst.executeQuery();
+            while(rst.next()){
+                OpDiary opRow=new OpDiary();
+                opRow.setOpTime(rst.getString("datetime"));
+                opRow.setUsername(rst.getString("user"));
+                opRow.setOpType(rst.getInt("type"));
+                opRow.setOpObject(rst.getString("content"));
+                logs.add(opRow);
+            }
+            conn.close();
+            msg.obj=logs;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            msg.obj=null;
+        }
+        updateUI.updateUi(msg);
+    }
+
+    private void handleActionWriteLog(OpDiary row){
+        conn=conncet();
+        PreparedStatement pst= null;
+        try {
+            pst = conn.prepareStatement( "insert into op_log values(?,?,?,?)");
+            pst.setString(1,row.getOpTime());
+            pst.setString(2,row.getUsername());
+            pst.setInt(3,row.getOpType());
+            pst.setString(4,row.getOpObject());
+            pst.execute();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Connection conncet() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/test?useSSL=false&allowPublicKeyRetrieval=true",
+            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true",
                     "admin","ABCabc123");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {

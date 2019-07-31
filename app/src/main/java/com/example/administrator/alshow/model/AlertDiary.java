@@ -5,6 +5,7 @@ public class AlertDiary {
     private String occurTime;
     private int alertClass;
     private String description;
+    private boolean solved;
 
     public String getNumberOfBar() {
         return numberOfBar;
@@ -36,5 +37,13 @@ public class AlertDiary {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isSolved() {
+        return solved;
+    }
+
+    public void setSolved(boolean solved) {
+        this.solved = solved;
     }
 }

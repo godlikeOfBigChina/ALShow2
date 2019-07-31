@@ -1,6 +1,11 @@
 package com.example.administrator.alshow.model;
 
-public class OpDiary {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class OpDiary implements Serializable {
     private String username;
     private String opTime;
     private int opType;
@@ -37,4 +42,5 @@ public class OpDiary {
     public void setOpObject(String opObject) {
         this.opObject = opObject;
     }
+
 }

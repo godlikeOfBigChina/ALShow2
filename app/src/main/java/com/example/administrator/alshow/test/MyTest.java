@@ -2,14 +2,13 @@ package com.example.administrator.alshow.test;
 
 
 import com.example.administrator.alshow.model.Groove;
-import com.example.administrator.alshow.model.Motor;
+import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
 import com.example.administrator.alshow.service.MyService;
 
 import org.junit.Test;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,23 +19,30 @@ public class MyTest{
 
     @Test
     public void testGetGroove(){
-        Groove groove=service.getGroove(1);
-        assertEquals(1,groove.getBarsOfA().size());
-        assertEquals(1,groove.getBarsOfB().size());
+        Groove groove=service.getGroove(1001);
+        assertEquals(24,groove.getBarsOfA().size());
+        assertEquals(24,groove.getBarsOfB().size());
     }
 
     @Test
     public void testGetBar(){
-        PositiveBar bar=service.getPositiveBar(1,1,false);
-        assertEquals(19,bar.getCurrent(),0);
-        assertEquals(19,bar.getVoltage(),0);
-        assertEquals(19,bar.getTempareture(),0);
-        assertEquals(2,bar.getMotor().getSpeed());
+        List<PositiveBar> bars=service.getPositiveBarHistory(1001,true,1);
+        assertEquals(21,bars.size(),0);
     }
 
     @Test
-    public void testMotor(){
-        Motor motor=service.getMotor(1);
-        assertEquals(1,motor.getSpeed());
+    public void testReadLog(){
+        List<OpDiary> logs=service.getReadLog("ycn");
+        assertEquals(2,logs.size(),0);
+    }
+
+    @Test
+    public void testWriteLog(){
+        OpDiary row=new OpDiary();
+        row.setOpTime("20190731 15:33");
+        row.setUsername("ycn");
+        row.setOpType(1);
+        row.setOpObject("");
+        service.handleActionWriteLog(row);
     }
 }

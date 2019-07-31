@@ -34,10 +34,10 @@ public class HistoryActivity extends AppCompatActivity implements MyIntentServic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
-        grooveIdView=findViewById(R.id.grooveId);
-        anodeIdView=findViewById(R.id.anodeId);
-        ifAView=findViewById(R.id.ifA);
-        Button getHistory=findViewById(R.id.btnGetHistory);
+        grooveIdView=(EditText) findViewById(R.id.grooveId);
+        anodeIdView=(EditText) findViewById(R.id.anodeId);
+        ifAView=(ToggleButton) findViewById(R.id.ifA);
+        Button getHistory=(Button) findViewById(R.id.btnGetHistory);
         getHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,10 +63,10 @@ public class HistoryActivity extends AppCompatActivity implements MyIntentServic
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ScrollingView scrollingMain=findViewById(R.id.scroll_main);
-                    LineChart chatI=((View)scrollingMain).findViewById(R.id.chartLineI);
-                    LineChart chatV=((View)scrollingMain).findViewById(R.id.chartLineV);
-                    LineChart chatT=((View)scrollingMain).findViewById(R.id.chartLineT);
+                    ScrollingView scrollingMain=(ScrollingView) findViewById(R.id.scroll_main);
+                    LineChart chatI=(LineChart) ((View)scrollingMain).findViewById(R.id.chartLineI);
+                    LineChart chatV=(LineChart)((View)scrollingMain).findViewById(R.id.chartLineV);
+                    LineChart chatT=(LineChart)((View)scrollingMain).findViewById(R.id.chartLineT);
                     List<PositiveBar> anodeHistory=(List<PositiveBar>)msg.obj;
                     chatI=GetChart.getAnodeHistory(chatI,anodeHistory, GetChart.Kind.I);
                     chatI.invalidate();

@@ -17,12 +17,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.User;
 import com.example.administrator.alshow.service.MyIntentService;
 import com.example.administrator.alshow.service.MyService;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.example.administrator.alshow.service.StatusTable.ACTION_GETGROOVE;
 import static com.example.administrator.alshow.service.StatusTable.ACTION_LOGIN;
@@ -73,14 +76,23 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
             public boolean handleMessage(Message msg) {
                 switch (msg.what){
                     case ACTION_LOGIN:
-                        Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                         User user=(User)msg.obj;
-//                        Log.e(user.getId()+user.getPassWords(),Integer.toString(user.getRank()));
-                        intent.putExtra("userId",user.getId());
-                        intent.putExtra("userName",user.getName());
-                        intent.putExtra("userRank",user.getRank());
-                        startActivity(intent);
+                        Intent intent=new Intent(getBaseContext(),MyIntentService.class);
+                        intent.setAction(MyIntentService.ACTION_WRITELOG);
+                        OpDiary row= new OpDiary();
+                        SimpleDateFormat format=new SimpleDateFormat("yyyMMdd HH:mm:ss");
+                        row.setOpTime(format.format(new Date()));
+                        row.setUsername(user.getId());
+                        row.setOpType(1);
+                        row.setOpObject("");
+                        intent.putExtra(MyIntentService.EXTRA_PARAM_LOGROW,row);
+                        startService(intent);
+                        Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
+                        Intent intentAct = new Intent(getApplicationContext(), HomeActivity.class);
+                        intentAct.putExtra("userId",user.getId());
+                        intentAct.putExtra("userName",user.getName());
+                        intentAct.putExtra("userRank",user.getRank());
+                        startActivity(intentAct);
                         break;
                     case ACTION_GETGROOVE:
                         break;

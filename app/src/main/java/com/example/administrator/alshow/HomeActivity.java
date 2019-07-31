@@ -54,13 +54,13 @@ public class HomeActivity extends AppCompatActivity
         user.setName(intent.getStringExtra("userName"));
         user.setRank(intent.getIntExtra("userRank",2));
         //显示用户信息
-        TextView idView=navigationView.getHeaderView(0).findViewById(R.id.userId);
+        TextView idView=(TextView) navigationView.getHeaderView(0).findViewById(R.id.userId);
         idView.setText(user.getId());
-        TextView nameView=navigationView.getHeaderView(0).findViewById(R.id.userName);
+        TextView nameView=(TextView)navigationView.getHeaderView(0).findViewById(R.id.userName);
         nameView.setText(user.getName());
         //设置查询控件
-        EditText grooveId=findViewById(R.id.grooveId);
-        Button button=findViewById(R.id.btnGetGrooveId);
+        EditText grooveId=(EditText) findViewById(R.id.grooveId);
+        Button button=(Button) findViewById(R.id.btnGetGrooveId);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,7 +120,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_alert) {
             startActivity(new Intent(this,AlertActivity.class));
         } else if (id == R.id.nav_diary) {
-            startActivity(new Intent(this,OpDiaryActivity.class));
+            Intent intent=new Intent(this,OpDiaryActivity.class);
+            intent.putExtra("username",user.getId());
+            startActivity(intent);
         } else if (id == R.id.nav_situation) {
             startActivity(new Intent(this,SituationActivity.class));
         } else if (id == R.id.nav_comm) {
@@ -144,13 +146,13 @@ public class HomeActivity extends AppCompatActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ScrollingView scrollingMain=findViewById(R.id.scroll_main);
-                BarChart chartAI= ((View)scrollingMain).findViewById(R.id.A_chart_I);
-                BarChart chartAV= ((View)scrollingMain).findViewById(R.id.A_chart_V);
-                BarChart chartAT= ((View)scrollingMain).findViewById(R.id.A_chart_T);
-                BarChart chartBI= ((View)scrollingMain).findViewById(R.id.B_chart_I);
-                BarChart chartBV= ((View)scrollingMain).findViewById(R.id.B_chart_V);
-                BarChart chartBT= ((View)scrollingMain).findViewById(R.id.B_chart_T);
+                ScrollingView scrollingMain=(ScrollingView) findViewById(R.id.scroll_main);
+                BarChart chartAI= (BarChart) ((View)scrollingMain).findViewById(R.id.A_chart_I);
+                BarChart chartAV= (BarChart)((View)scrollingMain).findViewById(R.id.A_chart_V);
+                BarChart chartAT= (BarChart)((View)scrollingMain).findViewById(R.id.A_chart_T);
+                BarChart chartBI= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_I);
+                BarChart chartBV= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_V);
+                BarChart chartBT= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_T);
                 Groove groove=(Groove) msg.obj;
                 chartAI= GetChart.getBarChart(chartAI,groove,true, GetChart.Kind.I);
                 chartAI.invalidate();
