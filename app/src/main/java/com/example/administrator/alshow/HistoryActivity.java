@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.administrator.alshow.model.Groove;
@@ -26,7 +28,7 @@ import java.util.List;
 
 public class HistoryActivity extends AppCompatActivity implements MyIntentService.UpdateUI {
     private EditText grooveIdView;
-    private EditText anodeIdView;
+    private Spinner anodeIdView;
     private ToggleButton ifAView;
 
     @Override
@@ -35,24 +37,29 @@ public class HistoryActivity extends AppCompatActivity implements MyIntentServic
         setContentView(R.layout.activity_history);
 
         grooveIdView=(EditText) findViewById(R.id.grooveId);
-        anodeIdView=(EditText) findViewById(R.id.anodeId);
+        grooveIdView.setText(getIntent().getStringExtra(MyIntentService.EXTRA_PARAM_GROOVEID));
+        anodeIdView=(Spinner) findViewById(R.id.anodeId);
         ifAView=(ToggleButton) findViewById(R.id.ifA);
         Button getHistory=(Button) findViewById(R.id.btnGetHistory);
         getHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int grooveId=Integer.parseInt(grooveIdView.getText().toString());
-                int anodeId=Integer.parseInt(anodeIdView.getText().toString());
-                boolean ifA=ifAView.isChecked();
-                Intent intent=new Intent(HistoryActivity.this, MyIntentService.class);
-                intent.setAction(MyIntentService.ACTION_GETHISTORY);
-                intent.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,grooveId);
-                intent.putExtra(MyIntentService.EXTRA_PARAM_ANODEID,anodeId);
-                intent.putExtra(MyIntentService.EXTRA_PARAM_IFA,ifA);
-                MyIntentService.setUpdateUI(HistoryActivity.this);
-                startService(intent);
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if("".equals(grooveIdView.getText().toString())||"".equals(anodeIdView.getSelectedItem().toString())){
+                    Toast.makeText(getBaseContext(),"请输入槽号、导杆编号",Toast.LENGTH_SHORT).show();
+                }else{
+                    int grooveId=Integer.parseInt(grooveIdView.getText().toString());
+                    int anodeId=Integer.parseInt(anodeIdView.getSelectedItem().toString());
+                    boolean ifA=ifAView.isChecked();
+                    Intent intent=new Intent(HistoryActivity.this, MyIntentService.class);
+                    intent.setAction(MyIntentService.ACTION_GETHISTORY);
+                    intent.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,grooveId);
+                    intent.putExtra(MyIntentService.EXTRA_PARAM_ANODEID,anodeId);
+                    intent.putExtra(MyIntentService.EXTRA_PARAM_IFA,ifA);
+                    MyIntentService.setUpdateUI(HistoryActivity.this);
+                    startService(intent);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
             }
         });
     }
@@ -76,6 +83,8 @@ public class HistoryActivity extends AppCompatActivity implements MyIntentServic
                     chatT.invalidate();
                 }
             });
+        }else if(msg.what== StatusTable.WORKNET_ERROR){
+            Toast.makeText(getBaseContext(), "工作网络错误", Toast.LENGTH_SHORT).show();
         }
 
     }

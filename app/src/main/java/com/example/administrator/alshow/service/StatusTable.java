@@ -11,5 +11,6 @@ public class StatusTable {
     public static final int RESUTL_LOGIN_FAIL=10;
     public static final int RESUTL_LOGIN_OK=11;
 
+    public static final int WORKNET_ERROR=21;
 
 }

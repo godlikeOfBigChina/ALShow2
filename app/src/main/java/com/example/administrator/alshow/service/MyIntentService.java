@@ -39,6 +39,7 @@ public class MyIntentService extends IntentService {
     public static final String ACTION_GETLOGS = "com.example.administrator.alshow.service.action.GetLogs";
     public static final String ACTION_WRITELOG = "com.example.administrator.alshow.service.action.WriteLog";
 
+    public static final String EXTRA_PARAM_USER="com.example.administrator.alshow.service.extra.USER";
     public static final String EXTRA_PARAM_USERNAME = "com.example.administrator.alshow.service.extra.USERNAME";
     public static final String EXTRA_PARAM_PASSWORDS = "com.example.administrator.alshow.service.extra.PASSWORDS";
     public static final String EXTRA_PARAM_GROOVEID = "com.example.administrator.alshow.service.extra.GROOVEID";
@@ -111,11 +112,10 @@ public class MyIntentService extends IntentService {
 
 
     private void handleActionLogin(String username, String passwords) {
-        conn = conncet();
         Message msg=new Message();
-        msg.what=StatusTable.ACTION_LOGIN;
-        msg.obj=ACTION_LOGIN;
+
         try {
+            conn = conncet();
             PreparedStatement pst = conn.prepareStatement("select * from system_user where(ID=? and pass_words=?)");
             pst.setString(1, username);
             pst.setString(2, passwords);
@@ -130,23 +130,20 @@ public class MyIntentService extends IntentService {
                 count++;
             }
             if (count == 1){
-                msg.arg1=RESUTL_LOGIN_OK;
-//              System.out.println(ifLogin);
+                msg.what=StatusTable.RESUTL_LOGIN_OK;
                 msg.obj=user;
             }else{
-                msg.arg1=RESUTL_LOGIN_FAIL;
+                msg.what=StatusTable.RESUTL_LOGIN_FAIL;
             }
             conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            msg.arg1=StatusTable.RESUTL_LOGIN_FAIL;
+        } catch (SQLException|ClassNotFoundException e) {
+            msg.what=StatusTable.WORKNET_ERROR;
         }
         updateUI.updateUi(msg);
     }
 
     private void handleActionGrooveId(int param1) {
         Message msg=new Message();
-        msg.what=StatusTable.ACTION_GETGROOVE;
         Groove groove=new Groove();
         groove.setPotNo(param1);
         try {
@@ -179,9 +176,11 @@ public class MyIntentService extends IntentService {
             groove.setBarsOfA(listA);
             groove.setBarsOfB(listB);
             conn.close();
+            msg.what=StatusTable.ACTION_GETGROOVE;
             msg.obj=groove;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException|ClassNotFoundException e) {
+            //e.printStackTrace();
+            msg.what=StatusTable.WORKNET_ERROR;
             msg.obj=null;
         }
         updateUI.updateUi(msg);
@@ -189,7 +188,6 @@ public class MyIntentService extends IntentService {
 
     private void handleActionGetHistory(int grooveId,boolean ifA,int anodeId){
         Message msg=new Message();
-        msg.what=StatusTable.ACTION_GETBARHISTORY;
         List<PositiveBar> anodeHistory=new ArrayList<>();
         try {
             conn=conncet();
@@ -210,9 +208,11 @@ public class MyIntentService extends IntentService {
 //                Log.e("**********",bar.getDatetime().toLocaleString());
             }
             conn.close();
+            msg.what=StatusTable.ACTION_GETBARHISTORY;
             msg.obj=anodeHistory;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException|ClassNotFoundException e) {
+            //e.printStackTrace();
+            msg.what=StatusTable.WORKNET_ERROR;
             msg.obj=null;
         }
         updateUI.updateUi(msg);
@@ -220,11 +220,10 @@ public class MyIntentService extends IntentService {
 
     private void handleActionReadLog(String username){
         Message msg=new Message();
-        msg.what=StatusTable.ACTION_GETREADLOGS;
         List<OpDiary> logs=new ArrayList<>();
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from op_log where user=?");
+            PreparedStatement pst=conn.prepareStatement( "select * from op_log where user=? order by datetime DESC");
             pst.setString(1,username);
             ResultSet rst=pst.executeQuery();
             while(rst.next()){
@@ -236,18 +235,20 @@ public class MyIntentService extends IntentService {
                 logs.add(opRow);
             }
             conn.close();
+            msg.what=StatusTable.ACTION_GETREADLOGS;
             msg.obj=logs;
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException|ClassNotFoundException e) {
+            //e.printStackTrace();
+            msg.what=StatusTable.WORKNET_ERROR;
             msg.obj=null;
         }
         updateUI.updateUi(msg);
     }
 
     private void handleActionWriteLog(OpDiary row){
-        conn=conncet();
         PreparedStatement pst= null;
         try {
+            conn=conncet();
             pst = conn.prepareStatement( "insert into op_log values(?,?,?,?)");
             pst.setString(1,row.getOpTime());
             pst.setString(2,row.getUsername());
@@ -255,21 +256,18 @@ public class MyIntentService extends IntentService {
             pst.setString(4,row.getOpObject());
             pst.execute();
             conn.close();
-        } catch (SQLException e) {
+        } catch (SQLException|ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    public Connection conncet() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true",
-                    "admin","ABCabc123");
-            return conn;
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public Connection conncet() throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true",
+                "admin","ABCabc123");
+//        conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true",
+//                "administrator","ASDasd123");
+        return conn;
     }
 
     public interface UpdateUI {

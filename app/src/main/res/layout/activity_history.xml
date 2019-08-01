@@ -25,11 +25,11 @@
                     android:layout_height="match_parent"
                     android:hint="槽号"
                     android:layout_weight="1"/>
-                <EditText
+                <Spinner
                     android:id="@+id/anodeId"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:hint="序号"
+                    android:entries="@array/rod_id"
                     android:layout_weight="1"/>
                 <ToggleButton
                     android:id="@+id/ifA"

@@ -33,7 +33,30 @@ public class OpDiaryViewHolder {
     }
 
     public void setOpType(int optype){
-        opType.setText("操作类型:"+Integer.toString(optype));
+        String txt=null;
+        switch (optype){
+            case 0:
+                txt="报警";
+                break;
+            case 1:
+                txt="登录";
+                break;
+            case 2:
+                txt="退出";
+                break;
+            case 3:
+                txt="伸出";
+                break;
+            case 4:
+                txt="退回";
+                break;
+            case 5:
+                txt="其它";
+                break;
+            default:
+                break;
+        }
+        opType.setText("操作类型:"+txt);
     }
 
     public void setOpObject(String object){

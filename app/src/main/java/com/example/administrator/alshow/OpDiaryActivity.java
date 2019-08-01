@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.example.administrator.alshow.model.OpDataAdaptor;
 import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
+import com.example.administrator.alshow.model.User;
 import com.example.administrator.alshow.service.MyIntentService;
 import com.example.administrator.alshow.service.StatusTable;
 import com.example.administrator.alshow.view.GetChart;
@@ -23,7 +24,7 @@ import java.util.List;
 public class OpDiaryActivity extends AppCompatActivity implements MyIntentService.UpdateUI{
 
     ListView listView;
-
+    User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +32,8 @@ public class OpDiaryActivity extends AppCompatActivity implements MyIntentServic
         listView=(ListView)findViewById(R.id.op_list_view);
         Intent intentService=new Intent(getBaseContext(),MyIntentService.class);
         intentService.setAction(MyIntentService.ACTION_GETLOGS);
-        intentService.putExtra(MyIntentService.EXTRA_PARAM_USERNAME,getIntent().getStringExtra("username"));
+        user=(User) getIntent().getSerializableExtra(MyIntentService.EXTRA_PARAM_USER);
+        intentService.putExtra(MyIntentService.EXTRA_PARAM_USERNAME,user.getId());
         startService(intentService);
         MyIntentService.setUpdateUI(OpDiaryActivity.this);
     }

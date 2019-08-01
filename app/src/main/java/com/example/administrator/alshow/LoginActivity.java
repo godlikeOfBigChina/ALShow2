@@ -21,6 +21,7 @@ import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.User;
 import com.example.administrator.alshow.service.MyIntentService;
 import com.example.administrator.alshow.service.MyService;
+import com.example.administrator.alshow.service.StatusTable;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -75,7 +76,7 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
             @Override
             public boolean handleMessage(Message msg) {
                 switch (msg.what){
-                    case ACTION_LOGIN:
+                    case StatusTable.RESUTL_LOGIN_OK:
                         User user=(User)msg.obj;
                         Intent intent=new Intent(getBaseContext(),MyIntentService.class);
                         intent.setAction(MyIntentService.ACTION_WRITELOG);
@@ -94,10 +95,14 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
                         intentAct.putExtra("userRank",user.getRank());
                         startActivity(intentAct);
                         break;
-                    case ACTION_GETGROOVE:
+                    case StatusTable.RESUTL_LOGIN_FAIL:
+                        Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                        break;
+                    case StatusTable.WORKNET_ERROR:
+                        Toast.makeText(LoginActivity.this, "工作网络错误", Toast.LENGTH_SHORT).show();
                         break;
                     default:
-                        Toast.makeText(LoginActivity.this, "登陆==", Toast.LENGTH_SHORT).show();
+                        break;
                 }
                 return false;
             }

@@ -23,16 +23,23 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.alshow.model.Groove;
 import com.example.administrator.alshow.model.User;
 import com.example.administrator.alshow.service.MyIntentService;
+import com.example.administrator.alshow.service.StatusTable;
 import com.example.administrator.alshow.view.GetChart;
 import com.github.mikephil.charting.charts.BarChart;
+import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.common.Constant;
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,MyIntentService.UpdateUI {
     private User user;
+    private EditText grooveId;
+    private Button search;
+    private static int REQUEST_CODE_SCAN=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,22 +66,34 @@ public class HomeActivity extends AppCompatActivity
         TextView nameView=(TextView)navigationView.getHeaderView(0).findViewById(R.id.userName);
         nameView.setText(user.getName());
         //设置查询控件
-        EditText grooveId=(EditText) findViewById(R.id.grooveId);
-        Button button=(Button) findViewById(R.id.btnGetGrooveId);
-        button.setOnClickListener(new View.OnClickListener() {
+        grooveId=(EditText) findViewById(R.id.grooveId);
+        search=(Button) findViewById(R.id.btnGetGrooveId);
+        search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //请求数据
-                Intent intentService=new Intent(getBaseContext(),MyIntentService.class);
-                intentService.setAction(MyIntentService.ACTION_GETGROOVE);
-                intentService.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,Integer.parseInt(grooveId.getText().toString()));
-                startService(intentService);
-                MyIntentService.setUpdateUI(HomeActivity.this);
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                if(!"".equals(grooveId.getText().toString())){
+                    //请求数据
+                    Intent intentService=new Intent(getBaseContext(),MyIntentService.class);
+                    intentService.setAction(MyIntentService.ACTION_GETGROOVE);
+                    intentService.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,Integer.parseInt(grooveId.getText().toString()));
+                    startService(intentService);
+                    MyIntentService.setUpdateUI(HomeActivity.this);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }else{
+                    Toast.makeText(getBaseContext(),"请输入槽号",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
-
+        Button btnScan=(Button) findViewById(R.id.btn_scan);
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getBaseContext(),CaptureActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_SCAN);
+            }
+        });
     }
 
     @Override
@@ -116,26 +135,24 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_history) {
-            startActivity(new Intent(this,HistoryActivity.class));
+            Intent intent=new Intent(this,HistoryActivity.class);
+            intent.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,grooveId.getText().toString());
+            startActivity(intent);
         } else if (id == R.id.nav_alert) {
             startActivity(new Intent(this,AlertActivity.class));
         } else if (id == R.id.nav_diary) {
             Intent intent=new Intent(this,OpDiaryActivity.class);
-            intent.putExtra("username",user.getId());
+            intent.putExtra(MyIntentService.EXTRA_PARAM_USER,user);
             startActivity(intent);
         } else if (id == R.id.nav_situation) {
             startActivity(new Intent(this,SituationActivity.class));
         } else if (id == R.id.nav_comm) {
-            startActivity(new Intent(this,ComActivity.class));
+            //startActivity(new Intent(this,ComActivity.class));
         } else if (id == R.id.nav_control) {
-            /*AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-            builder.setTitle("无法使用");
-            builder.setMessage("功能未完成或权限不足");
-            AlertDialog dialog = builder.create();
-            dialog.show();*/
-            startActivity(new Intent(this,ControlActivity.class));
+            Intent intent=new Intent(this,ControlActivity.class);
+            intent.putExtra(MyIntentService.EXTRA_PARAM_USER,user);
+            startActivity(intent);
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -143,31 +160,47 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void updateUi(Message msg) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ScrollingView scrollingMain=(ScrollingView) findViewById(R.id.scroll_main);
-                BarChart chartAI= (BarChart) ((View)scrollingMain).findViewById(R.id.A_chart_I);
-                BarChart chartAV= (BarChart)((View)scrollingMain).findViewById(R.id.A_chart_V);
-                BarChart chartAT= (BarChart)((View)scrollingMain).findViewById(R.id.A_chart_T);
-                BarChart chartBI= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_I);
-                BarChart chartBV= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_V);
-                BarChart chartBT= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_T);
-                Groove groove=(Groove) msg.obj;
-                chartAI= GetChart.getBarChart(chartAI,groove,true, GetChart.Kind.I);
-                chartAI.invalidate();
-                chartAV= GetChart.getBarChart(chartAV,groove,true, GetChart.Kind.V);
-                chartAV.invalidate();
-                chartAT= GetChart.getBarChart(chartAT,groove,true, GetChart.Kind.T);
-                chartAT.invalidate();
-                chartBI= GetChart.getBarChart(chartBI,groove,false, GetChart.Kind.I);
-                chartBI.invalidate();
-                chartBV= GetChart.getBarChart(chartBV,groove,false, GetChart.Kind.V);
-                chartBV.invalidate();
-                chartBT= GetChart.getBarChart(chartBT,groove,false, GetChart.Kind.T);
-                chartBT.invalidate();
+        if(msg.what== StatusTable.WORKNET_ERROR){
+            Toast.makeText(getBaseContext(), "工作网络错误", Toast.LENGTH_SHORT).show();
+        }else if(msg.what== StatusTable.ACTION_GETGROOVE){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ScrollingView scrollingMain=(ScrollingView) findViewById(R.id.scroll_main);
+                    BarChart chartAI= (BarChart) ((View)scrollingMain).findViewById(R.id.A_chart_I);
+                    BarChart chartAV= (BarChart)((View)scrollingMain).findViewById(R.id.A_chart_V);
+                    BarChart chartAT= (BarChart)((View)scrollingMain).findViewById(R.id.A_chart_T);
+                    BarChart chartBI= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_I);
+                    BarChart chartBV= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_V);
+                    BarChart chartBT= (BarChart)((View)scrollingMain).findViewById(R.id.B_chart_T);
+                    Groove groove=(Groove) msg.obj;
+                    chartAI= GetChart.getBarChart(chartAI,groove,true, GetChart.Kind.I);
+                    chartAI.invalidate();
+                    chartAV= GetChart.getBarChart(chartAV,groove,true, GetChart.Kind.V);
+                    chartAV.invalidate();
+                    chartAT= GetChart.getBarChart(chartAT,groove,true, GetChart.Kind.T);
+                    chartAT.invalidate();
+                    chartBI= GetChart.getBarChart(chartBI,groove,false, GetChart.Kind.I);
+                    chartBI.invalidate();
+                    chartBV= GetChart.getBarChart(chartBV,groove,false, GetChart.Kind.V);
+                    chartBV.invalidate();
+                    chartBT= GetChart.getBarChart(chartBT,groove,false, GetChart.Kind.T);
+                    chartBT.invalidate();
 
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
+            if (data != null) {
+                String rst=data.getStringExtra(Constant.CODED_CONTENT);
+                grooveId.setText(rst);
+                search.performClick();
             }
-        });
+        }
     }
 }

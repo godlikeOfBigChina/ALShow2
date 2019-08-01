@@ -1,6 +1,8 @@
 package com.example.administrator.alshow.model;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String id;
     private String name;
     private String passWords;

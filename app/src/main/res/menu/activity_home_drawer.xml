@@ -22,7 +22,7 @@
             android:title="槽况概览" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="通讯相关">
         <menu>
             <item
                 android:id="@+id/nav_comm"

@@ -28,7 +28,7 @@ public class OpDataAdaptor extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return Long.parseLong(diarys.get(position).getOpTime());
+        return position;
     }
 
     @Override
