@@ -28,6 +28,9 @@ import com.yzq.zxinglibrary.android.CaptureActivity;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -57,6 +60,10 @@ public class ControlActivity extends AppCompatActivity implements MyIntentServic
         listener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!user.getRole().equals("1")){
+                    Toast.makeText(getBaseContext(),"没有操作权限",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (v.getId()==R.id.scan){
                     Intent intent=new Intent(getBaseContext(),CaptureActivity.class);
                     ZxingConfig config = new ZxingConfig();
@@ -122,7 +129,7 @@ public class ControlActivity extends AppCompatActivity implements MyIntentServic
                     row.setOpType(isOut?3:4);
                     row.setOpObject(potNo.getText().toString());
                     intent.putExtra(MyIntentService.EXTRA_PARAM_LOGROW,row);
-                    startService(intent);
+                    //startService(intent);
                 } catch (Exception e) {
                     rtv=false;
                 }
@@ -177,7 +184,7 @@ public class ControlActivity extends AppCompatActivity implements MyIntentServic
             content+=isA?"A":"B"+id;
             row.setOpObject(content);
             intent.putExtra(MyIntentService.EXTRA_PARAM_LOGROW,row);
-            startService(intent);
+            //startService(intent);
             Toast.makeText(getBaseContext(), isOk ? "操作成功" : "操作异常", Toast.LENGTH_SHORT).show();
         }
     }
@@ -188,12 +195,18 @@ public class ControlActivity extends AppCompatActivity implements MyIntentServic
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String rst=data.getStringExtra(Constant.CODED_CONTENT);
-                potNo.setText(rst);
-                Intent intentService=new Intent(getBaseContext(),MyIntentService.class);
-                intentService.setAction(MyIntentService.ACTION_GETGROOVE);
-                intentService.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,Integer.parseInt(potNo.getText().toString()));
-                startService(intentService);
-                MyIntentService.setUpdateUI(ControlActivity.this);
+                String code=rst.split("DJ")[2].substring(1,5);
+                if(!"".equals(code)){
+                    potNo.setText(code);
+                    Intent intentService=new Intent(getBaseContext(),MyIntentService.class);
+                    intentService.setAction(MyIntentService.ACTION_GETGROOVE);
+                    intentService.putExtra(MyIntentService.EXTRA_PARAM_GROOVEID,Integer.parseInt(potNo.getText().toString()));
+                    startService(intentService);
+                    MyIntentService.setUpdateUI(ControlActivity.this);
+                }else{
+                    Toast.makeText(getBaseContext(),"二维码不符合编码规则",Toast.LENGTH_SHORT).show();
+                }
+                //{"code":"212DJ05DJC2829"}
             }
         }
     }

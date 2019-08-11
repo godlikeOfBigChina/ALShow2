@@ -6,7 +6,7 @@ public class User implements Serializable {
     private String id;
     private String name;
     private String passWords;
-    private int rank;
+    private String role;
 
     public String getId() {
         return id;
@@ -32,11 +32,11 @@ public class User implements Serializable {
         this.passWords = passWords;
     }
 
-    public int getRank() {
-        return rank;
+    public String getRole() {
+        return role;
     }
 
-    public void setRank(int rank) {
-        this.rank = rank;
+    public void setRole(String role) {
+        this.role = role;
     }
 }

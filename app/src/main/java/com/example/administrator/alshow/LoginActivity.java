@@ -90,9 +90,7 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
                         startService(intent);
                         Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_SHORT).show();
                         Intent intentAct = new Intent(getApplicationContext(), HomeActivity.class);
-                        intentAct.putExtra("userId",user.getId());
-                        intentAct.putExtra("userName",user.getName());
-                        intentAct.putExtra("userRank",user.getRank());
+                        intentAct.putExtra("USER",user);
                         startActivity(intentAct);
                         break;
                     case StatusTable.RESUTL_LOGIN_FAIL:
@@ -191,9 +189,10 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
      */
     private void login() throws NoSuchAlgorithmException{
         String username = et_name.getText().toString();
-        String code = et_pass.getText().toString();
-        String passwords = getMD5(code);
-        if (!username.equals("") && !code.equals("")) {
+//        String code = et_pass.getText().toString();
+//        String passwords = getMD5(code);
+        String passwords = et_pass.getText().toString();
+        if (!username.equals("") && !passwords.equals("")) {
             Intent intent=new Intent(this,MyIntentService.class);
             intent.setAction(MyIntentService.ACTION_LOGIN);
             intent.putExtra(MyIntentService.EXTRA_PARAM_USERNAME,username);
@@ -222,17 +221,6 @@ public class LoginActivity extends Activity implements OnClickListener,MyIntentS
         } else {
             finish();
         }
-    }
-
-    //对密码进行加密的方法
-    public String getMD5(String passwd) throws NoSuchAlgorithmException{
-        byte[] todayMD5 = MessageDigest.getInstance("MD5").digest(passwd.getBytes());
-        StringBuilder s=new StringBuilder();
-        for(byte b:todayMD5){
-            s.append(Byte.toString(b));
-        }
-//        System.out.println(s.toString());
-        return s.toString();
     }
 
 

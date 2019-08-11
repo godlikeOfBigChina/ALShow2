@@ -5,6 +5,7 @@ import android.os.Message;
 import com.example.administrator.alshow.model.Groove;
 import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
+import com.example.administrator.alshow.model.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,8 +27,10 @@ public class MyService{
     public Connection conncet() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=false",
-            "admin","ABCabc123");
+//            conn = DriverManager.getConnection("jdbc:mysql://192.168.43.14:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Shanghai",
+//                    "admin","ABCabc123");
+            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useUnicode=true&serverTimezone=Asia/Shanghai",
+                    "ddrs_admin","Passwd@123");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -35,13 +38,35 @@ public class MyService{
         }
     }
 
+    public User handleActionLogin(String username, String passwords) {
+        User user=new User();
+        try {
+            conn = conncet();
+            PreparedStatement pst = conn.prepareStatement("SELECT u.id,u.user_name,u.role_rank FROM system_user u WHERE u.id=? AND u.PASS_WORDS=MD5(?);");
+            pst.setString(1, username);
+            pst.setString(2, passwords);
+            ResultSet rst = pst.executeQuery();
+            int count=0;
+            while (rst.next()) {
+                user.setId(rst.getString("id"));
+                user.setName(rst.getString("user_name"));
+                user.setRole(rst.getString("role_rank"));
+                count++;
+            }
+            conn.close();
+        } catch (SQLException e) {
+
+        }
+        return user;
+    }
+
     public Groove getGroove(int id){
         Groove groove=new Groove();
         groove.setPotNo(id);
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "SELECT g.POT_NO,g.POT_NAME,g.IP_ADDR,b.ROD_NO,b.ROD_NAME,b.SIDE_TYPE,d.CURRENT,d.VOLTAGE,d.TEMPERATURE,d.MEASURE_TIME  FROM pot_measure_data d,rod_info b,pot_info g,\n" +
-                    "(SELECT MAX(dd.MEASURE_TIME) AS maxt FROM pot_measure_data dd) AS t\n" +
+            PreparedStatement pst=conn.prepareStatement( "SELECT g.POT_NO,g.POT_NAME,g.IP_ADDR,b.ROD_NO,b.ROD_NAME,b.SIDE_TYPE,d.CURRENT,d.VOLTAGE,d.TEMPERATURE,d.MEASURE_TIME  FROM pot_measure_data_1001 d,rod_info b,pot_info g,\n" +
+                    "(SELECT MAX(dd.MEASURE_TIME) AS maxt FROM pot_measure_data_1001 dd) AS t\n" +
                     "WHERE g.POT_NO=? AND g.POT_NO=d.POT_NO AND g.POT_NO=b.POT_NO AND d.MEASURE_TIME=t.maxt\n" +
                     "GROUP BY b.ROD_NO;");
             pst.setInt(1,groove.getPotNo());
@@ -79,7 +104,7 @@ public class MyService{
         List<PositiveBar> anodeHistory=new ArrayList<>();
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from pot_measure_data where POT_NO=? and ROD_NO=?");
+            PreparedStatement pst=conn.prepareStatement( "select * from pot_measure_data_1001 where POT_NO=? and ROD_NO=?");
             pst.setInt(1,grooveId);
             pst.setInt(2,ifA?anodeId:anodeId+24);
             ResultSet rst=pst.executeQuery();

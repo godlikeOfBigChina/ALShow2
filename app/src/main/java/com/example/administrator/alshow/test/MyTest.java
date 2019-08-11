@@ -4,6 +4,7 @@ package com.example.administrator.alshow.test;
 import com.example.administrator.alshow.model.Groove;
 import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
+import com.example.administrator.alshow.model.User;
 import com.example.administrator.alshow.service.MyService;
 
 import org.junit.Test;
@@ -44,5 +45,11 @@ public class MyTest{
         row.setOpType(1);
         row.setOpObject("");
         service.handleActionWriteLog(row);
+    }
+
+    @Test
+    public void testLogin(){
+        User user=service.handleActionLogin("admin","admin");
+        assertEquals("admin",user.getId());
     }
 }

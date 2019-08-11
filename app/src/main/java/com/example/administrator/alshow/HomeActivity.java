@@ -55,11 +55,7 @@ public class HomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //接收登录用户
-        user=new User();
-        Intent intent=getIntent();
-        user.setId(intent.getStringExtra("userId"));
-        user.setName(intent.getStringExtra("userName"));
-        user.setRank(intent.getIntExtra("userRank",2));
+        user=(User) getIntent().getSerializableExtra("USER");
         //显示用户信息
         TextView idView=(TextView) navigationView.getHeaderView(0).findViewById(R.id.userId);
         idView.setText(user.getId());
@@ -198,8 +194,13 @@ public class HomeActivity extends AppCompatActivity
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
                 String rst=data.getStringExtra(Constant.CODED_CONTENT);
-                grooveId.setText(rst);
-                search.performClick();
+                String code=rst.split("DJ")[2].substring(1,5);
+                if(!"".equals(code)) {
+                    grooveId.setText(code);
+                    search.performClick();
+                }else{
+                    Toast.makeText(getBaseContext(),"二维码不符合编码规则",Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

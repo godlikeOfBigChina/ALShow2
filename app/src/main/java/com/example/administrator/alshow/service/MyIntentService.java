@@ -116,17 +116,17 @@ public class MyIntentService extends IntentService {
 
         try {
             conn = conncet();
-            PreparedStatement pst = conn.prepareStatement("select * from system_user where(ID=? and pass_words=?)");
+//            PreparedStatement pst = conn.prepareStatement("SELECT u.id,u.login_name,r.role_type FROM sys_user u,sys_role r,sys_user_role ur WHERE u.login_name='?' AND u.`password`=MD5('?') AND u.id=ur.user_id AND r.id=ur.role_id");
+            PreparedStatement pst = conn.prepareStatement("SELECT * FROM system_user u WHERE u.ID=? AND u.PASS_WORDS=MD5(?);");
             pst.setString(1, username);
             pst.setString(2, passwords);
             ResultSet rst = pst.executeQuery();
             int count=0;
             User user=new User();
             while (rst.next()) {
-                user.setId(rst.getString(1));
-                user.setName(rst.getString(2));
-                user.setPassWords(rst.getString(3));
-                user.setRank(rst.getInt(4));
+                user.setId(rst.getString("id"));
+                user.setName(rst.getString("user_name"));
+                user.setRole(rst.getString("role_rank"));
                 count++;
             }
             if (count == 1){
@@ -136,7 +136,7 @@ public class MyIntentService extends IntentService {
                 msg.what=StatusTable.RESUTL_LOGIN_FAIL;
             }
             conn.close();
-        } catch (SQLException|ClassNotFoundException e) {
+        } catch (SQLException e) {
             msg.what=StatusTable.WORKNET_ERROR;
         }
         updateUI.updateUi(msg);
@@ -148,8 +148,8 @@ public class MyIntentService extends IntentService {
         groove.setPotNo(param1);
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "SELECT g.POT_NO,g.POT_NAME,g.IP_ADDR,b.ROD_NO,b.ROD_NAME,b.SIDE_TYPE,d.CURRENT,d.VOLTAGE,d.TEMPERATURE,d.MEASURE_TIME  FROM pot_measure_data d,rod_info b,pot_info g,\n" +
-                    "(SELECT MAX(dd.MEASURE_TIME) AS maxt FROM pot_measure_data dd) AS t\n" +
+            PreparedStatement pst=conn.prepareStatement( "SELECT g.POT_NO,g.POT_NAME,g.IP_ADDR,b.ROD_NO,b.ROD_NAME,b.SIDE_TYPE,d.CURRENT,d.VOLTAGE,d.TEMPERATURE,d.MEASURE_TIME  FROM pot_measure_data_1001 d,rod_info b,pot_info g,\n" +
+                    "(SELECT MAX(dd.MEASURE_TIME) AS maxt FROM pot_measure_data_1001 dd) AS t\n" +
                     "WHERE g.POT_NO=? AND g.POT_NO=d.POT_NO AND g.POT_NO=b.POT_NO AND d.MEASURE_TIME=t.maxt\n" +
                     "GROUP BY b.ROD_NO;");
             pst.setInt(1,groove.getPotNo());
@@ -178,7 +178,7 @@ public class MyIntentService extends IntentService {
             conn.close();
             msg.what=StatusTable.ACTION_GETGROOVE;
             msg.obj=groove;
-        } catch (SQLException|ClassNotFoundException e) {
+        } catch (SQLException e) {
             //e.printStackTrace();
             msg.what=StatusTable.WORKNET_ERROR;
             msg.obj=null;
@@ -191,7 +191,7 @@ public class MyIntentService extends IntentService {
         List<PositiveBar> anodeHistory=new ArrayList<>();
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from pot_measure_data where POT_NO=? and ROD_NO=?");
+            PreparedStatement pst=conn.prepareStatement( "select * from pot_measure_data_1001 where POT_NO=? and ROD_NO=?");
             pst.setInt(1,grooveId);
             pst.setInt(2,ifA?anodeId:anodeId+24);
             ResultSet rst=pst.executeQuery();
@@ -210,7 +210,7 @@ public class MyIntentService extends IntentService {
             conn.close();
             msg.what=StatusTable.ACTION_GETBARHISTORY;
             msg.obj=anodeHistory;
-        } catch (SQLException|ClassNotFoundException e) {
+        } catch (SQLException e) {
             //e.printStackTrace();
             msg.what=StatusTable.WORKNET_ERROR;
             msg.obj=null;
@@ -237,7 +237,7 @@ public class MyIntentService extends IntentService {
             conn.close();
             msg.what=StatusTable.ACTION_GETREADLOGS;
             msg.obj=logs;
-        } catch (SQLException|ClassNotFoundException e) {
+        } catch (SQLException e) {
             //e.printStackTrace();
             msg.what=StatusTable.WORKNET_ERROR;
             msg.obj=null;
@@ -256,18 +256,23 @@ public class MyIntentService extends IntentService {
             pst.setString(4,row.getOpObject());
             pst.execute();
             conn.close();
-        } catch (SQLException|ClassNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public Connection conncet() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection("jdbc:mysql://172.16.10.151:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true",
-                "admin","ABCabc123");
-//        conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true",
-//                "administrator","ASDasd123");
-        return conn;
+    public Connection conncet() {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+//            conn = DriverManager.getConnection("jdbc:mysql://192.168.43.14:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Shanghai",
+//                    "admin","ABCabc123");
+            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useUnicode=true&serverTimezone=Asia/Shanghai",
+                    "ddrs_admin","Passwd@123");
+            return conn;
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public interface UpdateUI {
