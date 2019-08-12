@@ -148,11 +148,9 @@ public class MyIntentService extends IntentService {
         groove.setPotNo(param1);
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "SELECT g.POT_NO,g.POT_NAME,g.IP_ADDR,b.ROD_NO,b.ROD_NAME,b.SIDE_TYPE,d.CURRENT,d.VOLTAGE,d.TEMPERATURE,d.MEASURE_TIME  FROM pot_measure_data_1001 d,rod_info b,pot_info g,\n" +
-                    "(SELECT MAX(dd.MEASURE_TIME) AS maxt FROM pot_measure_data_1001 dd) AS t\n" +
-                    "WHERE g.POT_NO=? AND g.POT_NO=d.POT_NO AND g.POT_NO=b.POT_NO AND d.MEASURE_TIME=t.maxt\n" +
-                    "GROUP BY b.ROD_NO;");
-            pst.setInt(1,groove.getPotNo());
+            PreparedStatement pst=conn.prepareStatement( "SELECT * FROM pot_info p,rod_info r,pot_measure_data_1001 d " +
+                    "WHERE p.POT_NO=r.POT_NO AND r.ROD_NO=d.ROD_NO ORDER BY d.MEASURE_TIME DESC,d.ROD_NO LIMIT 48;");
+//            pst.setInt(1,groove.getPotNo());
             ResultSet rst=pst.executeQuery();
             List<PositiveBar> listA=new ArrayList<>();
             List<PositiveBar> listB=new ArrayList<>();
@@ -170,6 +168,7 @@ public class MyIntentService extends IntentService {
                 if(bar.isIfA()){
                     listA.add(bar);
                 }else{
+                    bar.setId(bar.getId()-24);
                     listB.add(bar);
                 }
             }
@@ -191,7 +190,7 @@ public class MyIntentService extends IntentService {
         List<PositiveBar> anodeHistory=new ArrayList<>();
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from pot_measure_data_1001 where POT_NO=? and ROD_NO=?");
+            PreparedStatement pst=conn.prepareStatement( "select * from h_pot_measure_data_1001 where POT_NO=? and ROD_NO=? ORDER BY TEMPERATURE DESC LIMIT 300;");
             pst.setInt(1,grooveId);
             pst.setInt(2,ifA?anodeId:anodeId+24);
             ResultSet rst=pst.executeQuery();
@@ -200,7 +199,7 @@ public class MyIntentService extends IntentService {
                 bar.setGrooveId(grooveId);
                 bar.setIfA(ifA);
                 bar.setId(anodeId);
-                bar.setDatetime(new Date(rst.getTimestamp("MEASURE_TIME").getTime()));
+                bar.setDatetime(rst.getTimestamp("MEASURE_TIME"));
                 bar.setCurrent(rst.getFloat("CURRENT"));
                 bar.setVoltage(rst.getFloat("VOLTAGE"));
                 bar.setTempareture(rst.getFloat("TEMPERATURE"));
@@ -266,7 +265,7 @@ public class MyIntentService extends IntentService {
             Class.forName("com.mysql.jdbc.Driver");
 //            conn = DriverManager.getConnection("jdbc:mysql://192.168.43.14:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Shanghai",
 //                    "admin","ABCabc123");
-            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useUnicode=true&serverTimezone=Asia/Shanghai",
+            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useSSL=false&useUnicode=true&serverTimezone=Asia/Shanghai",
                     "ddrs_admin","Passwd@123");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {

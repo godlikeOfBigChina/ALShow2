@@ -29,7 +29,7 @@ public class MyService{
             Class.forName("com.mysql.jdbc.Driver");
 //            conn = DriverManager.getConnection("jdbc:mysql://192.168.43.14:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Shanghai",
 //                    "admin","ABCabc123");
-            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useUnicode=true&serverTimezone=Asia/Shanghai",
+            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useSSL=false&useUnicode=true&serverTimezone=Asia/Shanghai",
                     "ddrs_admin","Passwd@123");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {

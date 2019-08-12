@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class GetChart {
                 entry.add(new BarEntry(bar.getId(),kind==Kind.I?bar.getCurrent():(kind==Kind.V?bar.getVoltage():bar.getTempareture())));
             }
         }else{
-            for (PositiveBar bar:groove.getBarsOfA()) {
+            for (PositiveBar bar:groove.getBarsOfB()) {
                 entry.add(new BarEntry(bar.getId(),kind==Kind.I?bar.getCurrent():(kind==Kind.V?bar.getVoltage():bar.getTempareture())));
             }
         }
@@ -45,12 +46,13 @@ public class GetChart {
 
     public static LineChart getAnodeHistory(LineChart chart,List<PositiveBar> anodeList, Kind kind){
 //        Log.e("size:"+anodeList.size(),anodeList.get(0).toString());
+        SimpleDateFormat format=new SimpleDateFormat("HH:mm:ss");
         String[] xLables=new String[anodeList.size()];
         List<Entry> entry=new ArrayList<Entry>();
         int i=0;
         for (PositiveBar bar:anodeList) {
             entry.add(new Entry(i,(kind==Kind.I?bar.getCurrent():(kind==Kind.V?bar.getVoltage():bar.getTempareture()))*1000));
-            xLables[i++]=bar.getDatetime().toLocaleString().substring(13);
+            xLables[i++]=format.format(bar.getDatetime());
         }
         LineDataSet dataSet = new LineDataSet(entry, kind==Kind.I?"电流":(kind==Kind.V?"电压:mV":"温度")); // add entries to dataset
         dataSet.setColor(kind==Kind.I?Color.GREEN:(kind==Kind.V?Color.RED:Color.BLUE));

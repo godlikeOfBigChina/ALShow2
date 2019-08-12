@@ -85,6 +85,7 @@
                 android:paddingLeft="55dp"
                 android:paddingRight="60dp"
                 android:singleLine="true"
+                android:text="admin"
                 android:hint="密码"></EditText>
 
             <ImageView
