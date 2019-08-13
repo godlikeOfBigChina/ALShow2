@@ -9,6 +9,7 @@ import com.example.administrator.alshow.model.Groove;
 import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
 import com.example.administrator.alshow.model.User;
+import com.example.administrator.alshow.util.ACDEncodeUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -115,19 +116,22 @@ public class MyIntentService extends IntentService {
         Message msg=new Message();
 
         try {
-            conn = conncet();
-//            PreparedStatement pst = conn.prepareStatement("SELECT u.id,u.login_name,r.role_type FROM sys_user u,sys_role r,sys_user_role ur WHERE u.login_name='?' AND u.`password`=MD5('?') AND u.id=ur.user_id AND r.id=ur.role_id");
-            PreparedStatement pst = conn.prepareStatement("SELECT * FROM system_user u WHERE u.ID=? AND u.PASS_WORDS=MD5(?);");
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/jeeplus_gami?useSSL=false&useUnicode=true&serverTimezone=Asia/Shanghai",
+                    "ddrs_admin","Passwd@123");
+            PreparedStatement pst = conn.prepareStatement("SELECT u.id,u.login_name,u.password,r.name FROM sys_user u,sys_role r,sys_user_role ur WHERE u.login_name=? AND u.id=ur.user_id AND r.id=ur.role_id;");
             pst.setString(1, username);
-            pst.setString(2, passwords);
-            ResultSet rst = pst.executeQuery();
-            int count=0;
+            ResultSet rst=pst.executeQuery();
             User user=new User();
-            while (rst.next()) {
-                user.setId(rst.getString("id"));
-                user.setName(rst.getString("user_name"));
-                user.setRole(rst.getString("role_rank"));
-                count++;
+            int count=0;
+            while(rst.next()) {
+                boolean validate= ACDEncodeUtil.validatePassword(passwords, rst.getString("password"));
+                if(validate){
+                    user.setId(rst.getString("id"));
+                    user.setName(rst.getString("login_name"));
+                    user.setRole(rst.getString("name"));
+                    count++;
+                }
             }
             if (count == 1){
                 msg.what=StatusTable.RESUTL_LOGIN_OK;
@@ -136,7 +140,7 @@ public class MyIntentService extends IntentService {
                 msg.what=StatusTable.RESUTL_LOGIN_FAIL;
             }
             conn.close();
-        } catch (SQLException e) {
+        } catch (SQLException|ClassNotFoundException e) {
             msg.what=StatusTable.WORKNET_ERROR;
         }
         updateUI.updateUi(msg);
@@ -148,9 +152,9 @@ public class MyIntentService extends IntentService {
         groove.setPotNo(param1);
         try {
             conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "SELECT * FROM pot_info p,rod_info r,pot_measure_data_1001 d " +
+            PreparedStatement pst=conn.prepareStatement( "SELECT * FROM pot_info p,rod_info r,pot_measure_data_? d " +
                     "WHERE p.POT_NO=r.POT_NO AND r.ROD_NO=d.ROD_NO ORDER BY d.MEASURE_TIME DESC,d.ROD_NO LIMIT 48;");
-//            pst.setInt(1,groove.getPotNo());
+            pst.setInt(1,groove.getPotNo());
             ResultSet rst=pst.executeQuery();
             List<PositiveBar> listA=new ArrayList<>();
             List<PositiveBar> listB=new ArrayList<>();
@@ -189,10 +193,11 @@ public class MyIntentService extends IntentService {
         Message msg=new Message();
         List<PositiveBar> anodeHistory=new ArrayList<>();
         try {
-            conn=conncet();
-            PreparedStatement pst=conn.prepareStatement( "select * from h_pot_measure_data_1001 where POT_NO=? and ROD_NO=? ORDER BY TEMPERATURE DESC LIMIT 300;");
+            conn = conncet();
+            PreparedStatement pst=conn.prepareStatement( "select * from h_pot_measure_data_? where POT_NO=? and ROD_NO=? ORDER BY TEMPERATURE DESC LIMIT 300;");
             pst.setInt(1,grooveId);
-            pst.setInt(2,ifA?anodeId:anodeId+24);
+            pst.setInt(2,grooveId);
+            pst.setInt(3,ifA?anodeId:anodeId+24);
             ResultSet rst=pst.executeQuery();
             while(rst.next()){
                 PositiveBar bar =new PositiveBar();

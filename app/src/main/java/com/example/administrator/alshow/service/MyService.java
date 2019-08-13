@@ -6,6 +6,7 @@ import com.example.administrator.alshow.model.Groove;
 import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
 import com.example.administrator.alshow.model.User;
+import com.example.administrator.alshow.util.ACDEncodeUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -27,8 +28,8 @@ public class MyService{
     public Connection conncet() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-//            conn = DriverManager.getConnection("jdbc:mysql://192.168.43.14:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Shanghai",
-//                    "admin","ABCabc123");
+//            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ddrs_db?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&serverTimezone=Asia/Shanghai",
+//                    "root","ABCabc123");
             conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/ddrs_db?useSSL=false&useUnicode=true&serverTimezone=Asia/Shanghai",
                     "ddrs_admin","Passwd@123");
             return conn;
@@ -38,26 +39,37 @@ public class MyService{
         }
     }
 
-    public User handleActionLogin(String username, String passwords) {
-        User user=new User();
+    public Message handleActionLogin(String username, String passwords) {
+        Message msg=new Message();
         try {
-            conn = conncet();
-            PreparedStatement pst = conn.prepareStatement("SELECT u.id,u.user_name,u.role_rank FROM system_user u WHERE u.id=? AND u.PASS_WORDS=MD5(?);");
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://10.88.3.204:3306/jeeplus_gami?useSSL=false&useUnicode=true&serverTimezone=Asia/Shanghai",
+                    "ddrs_admin","Passwd@123");
+            PreparedStatement pst = conn.prepareStatement("SELECT u.id,u.login_name,u.password,r.name FROM sys_user u,sys_role r,sys_user_role ur WHERE u.login_name=? AND u.id=ur.user_id AND r.id=ur.role_id;");
             pst.setString(1, username);
-            pst.setString(2, passwords);
-            ResultSet rst = pst.executeQuery();
+            ResultSet rst=pst.executeQuery();
+            User user=new User();
             int count=0;
-            while (rst.next()) {
-                user.setId(rst.getString("id"));
-                user.setName(rst.getString("user_name"));
-                user.setRole(rst.getString("role_rank"));
-                count++;
+            while(rst.next()) {
+                boolean validate= ACDEncodeUtil.validatePassword(passwords, rst.getString("password"));
+                if(validate){
+                    user.setId(rst.getString("id"));
+                    user.setName(rst.getString("login_name"));
+                    user.setRole(rst.getString("name"));
+                    count++;
+                }
+            }
+            if (count == 1){
+                msg.what=StatusTable.RESUTL_LOGIN_OK;
+                msg.obj=user;
+            }else{
+                msg.what=StatusTable.RESUTL_LOGIN_FAIL;
             }
             conn.close();
-        } catch (SQLException e) {
-
+        } catch (SQLException|ClassNotFoundException e) {
+            msg.what=StatusTable.WORKNET_ERROR;
         }
-        return user;
+        return msg;
     }
 
     public Groove getGroove(int id){

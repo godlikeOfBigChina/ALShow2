@@ -60,7 +60,7 @@ public class ControlActivity extends AppCompatActivity implements MyIntentServic
         listener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!user.getRole().equals("1")){
+                if(!user.getRole().equals("管理员")){
                     Toast.makeText(getBaseContext(),"没有操作权限",Toast.LENGTH_SHORT).show();
                     return;
                 }

@@ -1,11 +1,14 @@
 package com.example.administrator.alshow.test;
 
 
+import android.os.Message;
+
 import com.example.administrator.alshow.model.Groove;
 import com.example.administrator.alshow.model.OpDiary;
 import com.example.administrator.alshow.model.PositiveBar;
 import com.example.administrator.alshow.model.User;
 import com.example.administrator.alshow.service.MyService;
+import com.example.administrator.alshow.service.StatusTable;
 
 import org.junit.Test;
 
@@ -49,7 +52,9 @@ public class MyTest{
 
     @Test
     public void testLogin(){
-        User user=service.handleActionLogin("admin","admin");
-        assertEquals("admin",user.getId());
+        Message msg =service.handleActionLogin("admin","admin");
+        assertEquals(StatusTable.RESUTL_LOGIN_OK,msg.what);
+        User user=(User)msg.obj;
+        assertEquals("管理员",user.getRole());
     }
 }
